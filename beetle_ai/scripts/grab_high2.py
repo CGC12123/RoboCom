@@ -39,6 +39,7 @@ class Detect_marker(object):
         self.aruco_count = 0
 
     # Grasping motion
+    # 总进程
     def move(self, x, y, dist):
         global done
         if self.direction:
@@ -69,6 +70,7 @@ class Detect_marker(object):
         frame, ratio, (dw, dh) = self.yolo.letterbox(frame, (grabParams.IMG_SIZE, grabParams.IMG_SIZE))
         return frame
    
+   # 改为识别字符
     def obj_detect(self, img):
         global done
         x = y = 0
@@ -186,6 +188,7 @@ class Detect_marker(object):
             count-=1
             self.rate.sleep()
 
+    # 需要修改为新的放置位置
     def put_down(self):
         if grabParams.put_down_direction == "right":
             self.mc.send_coords([15,-192,300,-125,60,152], 70, 0)
@@ -209,7 +212,7 @@ def main():
         if detect_result is None:           
             continue
         else:   
-            dist_aruco = detect.aruco(frame)  
+            dist_aruco = detect.aruco(frame)
             if dist_aruco != None:       
                 x, y, _ = detect_result
                 real_x, real_y = detect.get_position(x, y)
