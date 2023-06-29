@@ -13,6 +13,7 @@ import math
 from GrabParams import grabParams
 import basic
 import argparse
+import pytesseract
 
 parser = argparse.ArgumentParser(description='manual to this script')
 parser.add_argument("--debug", type=bool, default="False")
@@ -57,7 +58,7 @@ class Detect_marker(object):
         time.sleep(0.4)
         self.back() 
         time.sleep(0.2)
-        self.put_down() 
+        self.mc.send_coords(grabParams.coords_pitchdown, 70, 0)
         done = True
         self.mc.set_color(0,255,0) #抓取结束，亮绿灯
 
@@ -72,50 +73,17 @@ class Detect_marker(object):
    
    # 改为识别字符
     def obj_detect(self, img):
-        global done
-        x = y = 0
-        w = h = 0
-        right_target = 0
-        net = cv2.dnn.readNetFromONNX(grabParams.ONNX_MODEL)
-        blob = cv2.dnn.blobFromImage(img, 1 / 255.0, (grabParams.IMG_SIZE, grabParams.IMG_SIZE), [0, 0, 0], swapRB=True, crop=False)
-        net.setInput(blob)
-        outputs = net.forward(net.getUnconnectedOutLayersNames())[0]
-        boxes, classes, scores = self.yolo.yolov5_post_process_simple(outputs)
-        if boxes is not None:
-            for i in range(len(classes)):
-                if classes[i] == grabParams.detect_target:
-                    self.clazz.append(i)
-            if len(self.clazz):
-                scores_max = scores[self.clazz[0]]
-                right_target = self.clazz[0]
-                for i in range(len(self.clazz)):
-                    if scores[self.clazz[i]] > scores_max:
-                        scores_max = scores[self.clazz[i]]
-                        right_target = self.clazz[i]
-                self.yolo.draw(img, zip(boxes)[right_target], zip(scores)[right_target], zip(classes)[right_target])
-                left, top, right, bottom = boxes[right_target]
-                x = int((left+right)/2)
-                y = int((top+bottom)/2)
-                w = bottom - top
-                h = right - left    
-            else:
-                done = True
-                self.mc.set_color(255,192,203) #识别不到，亮粉灯
-                return None
-        else:
-            self.detect_count+=1
-            if self.detect_count == 5:
-                done = True
-                self.mc.set_color(255,192,203) #识别不到，亮粉灯
-            return None
-        if w > h:
-            width = w
-        else: 
-            width = h
-        if x+y > 0:
-            return x, y, width
-        else:
-            return None
+        img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        boxes = pytesseract.image_to_boxes(img_gray)
+        for box in boxes.splitlines():
+            # print(box)
+            box = box.split(' ')
+            if box[0] == grabParams.character[0] or box[0] == grabParams.character[1]:
+                x, y, w, h = int(box[1]), int(box[2]), int(box[3]), int(box[4])
+                cv2.rectangle(img, (x, 640 - y), (w, 480 - h), (0, 0, 255), 2)
+
+                self.target_x = (x + w)/2
+                self.target_y = (640 + 480)/2
 
     def distance(self, w):
         dist = self.hr / w * self.lv
@@ -214,7 +182,7 @@ def main():
         else:   
             dist_aruco = detect.aruco(frame)
             if dist_aruco != None:       
-                x, y, _ = detect_result
+                x, y= detect_result
                 real_x, real_y = detect.get_position(x, y)
                 detect.move(0, real_y + grabParams.y_bias, dist_aruco)
             else:
