@@ -13,7 +13,6 @@ import math
 from GrabParams import grabParams
 import basic
 import argparse
-import pytesseract
 
 parser = argparse.ArgumentParser(description='manual to this script')
 parser.add_argument("--debug", type=bool, default="False")
@@ -24,7 +23,7 @@ done = grabParams.done
 class Detect_marker(object):
     def __init__(self):
         super(Detect_marker, self).__init__()
-        rospy.init_node('grab_high', anonymous=True)
+        rospy.init_node('grab_right', anonymous=True)
         self.pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
         self.rate = rospy.Rate(10) # 10hz
         self.mc = MyCobot(grabParams.usb_dev, grabParams.baudrate)
@@ -40,25 +39,55 @@ class Detect_marker(object):
         self.aruco_count = 0
 
     # Grasping motion
-    # 总进程
+    # 单点进程 竖直方向初次夹取
     def move(self, x, y, dist):
         global done
-        if self.direction:
-            coords_ori = grabParams.coords_high_left # left
-            coords_target = [coords_ori[0],  coords_ori[1]+y,  grabParams.grab_high_left, coords_ori[3] + grabParams.pitch_high_left,  coords_ori[4] + grabParams.roll_high_left,  coords_ori[5] - y/2]
-        else:
-            coords_ori = grabParams.coords_high_right# right
-            coords_target = [coords_ori[0],  coords_ori[1]+y/3,  grabParams.grab_high_right,  coords_ori[3] + grabParams.pitch_high_right,  coords_ori[4] + grabParams.roll_high_right,  coords_ori[5] - y/2]
+        self.going(x) # x 的误差使用前后移动来弥补
+        time.sleep(0.2)
+
+        # 初步对高位置
+        coords_ori = grabParams.coords_right_high
+        coords_target = [coords_ori[0],  coords_ori[1]+y,  grabParams.grab_right_high, coords_ori[3] + grabParams.pitch_right_high,  coords_ori[4] + grabParams.roll_right_high,  coords_ori[5] - y/2]
         self.mc.send_coords(coords_target, 70, 0)
         time.sleep(0.2)
+
+        # 移动到抓取的位置 写死 （或者用dist？）
+        coords_grab_target_high = [ ] # 需要先给个预先值 从预先值开始细调 使用误差值_right #########################################################
+        self.mc.send_coords(coords_grab_target_high, 70, 0)
+        time.sleep(0.2) # 等待移动到抓取的位置
+
+        # 抓取
         self.mc.set_color(255,0,0)  #抓取，亮红灯
-        self.going(dist) 
-        time.sleep(0.2)
         basic.grap(True)
         time.sleep(0.4)
-        self.back() 
+
+        # 放回
         time.sleep(0.2)
         self.mc.send_coords(grabParams.coords_pitchdown, 70, 0)
+        basic.grap(False) 
+        done = True
+        self.mc.set_color(0,255,0) #抓取结束，亮绿灯
+
+        # 初步对低位置
+        coords_ori = grabParams.coords_right_low
+        coords_target = [coords_ori[0],  coords_ori[1]+y,  grabParams.grab_right_low, coords_ori[3] + grabParams.pitch_right_low,  coords_ori[4] + grabParams.roll_right_low,  coords_ori[5] - y/2]
+        self.mc.send_coords(coords_target, 70, 0)
+        time.sleep(0.2)
+
+        # 移动到抓取的位置 写死 （或者用dist？）
+        coords_grab_target_low = [ ] # 需要先给个预先值 从预先值开始细调 使用误差值_right #########################################################
+        self.mc.send_coords(coords_grab_target_low, 70, 0)
+        time.sleep(0.2) # 等待移动到抓取的位置
+
+        # 抓取
+        self.mc.set_color(255,0,0)  #抓取，亮红灯
+        basic.grap(True)
+        time.sleep(0.4)
+
+        # 放回
+        time.sleep(0.2)
+        self.mc.send_coords(grabParams.coords_pitchdown, 70, 0)
+        basic.grap(False) 
         done = True
         self.mc.set_color(0,255,0) #抓取结束，亮绿灯
 
@@ -71,19 +100,51 @@ class Detect_marker(object):
         frame, ratio, (dw, dh) = self.yolo.letterbox(frame, (grabParams.IMG_SIZE, grabParams.IMG_SIZE))
         return frame
    
-   # 改为识别字符
     def obj_detect(self, img):
-        img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        boxes = pytesseract.image_to_boxes(img_gray)
-        for box in boxes.splitlines():
-            # print(box)
-            box = box.split(' ')
-            if box[0] == grabParams.character[0] or box[0] == grabParams.character[1]:
-                x, y, w, h = int(box[1]), int(box[2]), int(box[3]), int(box[4])
-                cv2.rectangle(img, (x, 640 - y), (w, 480 - h), (0, 0, 255), 2)
-
-                self.target_x = (x + w)/2
-                self.target_y = (640 + 480)/2
+        global done
+        x = y = 0
+        w = h = 0
+        right_target = 0
+        net = cv2.dnn.readNetFromONNX(grabParams.ONNX_MODEL)
+        blob = cv2.dnn.blobFromImage(img, 1 / 255.0, (grabParams.IMG_SIZE, grabParams.IMG_SIZE), [0, 0, 0], swapRB=True, crop=False)
+        net.setInput(blob)
+        outputs = net.forward(net.getUnconnectedOutLayersNames())[0]
+        boxes, classes, scores = self.yolo.yolov5_post_process_simple(outputs)
+        if boxes is not None:
+            for i in range(len(classes)):
+                if classes[i] == grabParams.detect_target:
+                    self.clazz.append(i)
+            if len(self.clazz):
+                scores_max = scores[self.clazz[0]]
+                right_target = self.clazz[0]
+                for i in range(len(self.clazz)):
+                    if scores[self.clazz[i]] > scores_max:
+                        scores_max = scores[self.clazz[i]]
+                        right_target = self.clazz[i]
+                self.yolo.draw(img, zip(boxes)[right_target], zip(scores)[right_target], zip(classes)[right_target])
+                left, top, right, bottom = boxes[right_target]
+                x = int((left+right)/2)
+                y = int((top+bottom)/2)
+                w = bottom - top
+                h = right - left    
+            else:
+                done = True
+                self.mc.set_color(255,192,203) #识别不到，亮粉灯
+                return None
+        else:
+            self.detect_count+=1
+            if self.detect_count == 5:
+                done = True
+                self.mc.set_color(255,192,203) #识别不到，亮粉灯
+            return None
+        if w > h:
+            width = w
+        else: 
+            width = h
+        if x+y > 0:
+            return x, y, width
+        else:
+            return None
 
     def distance(self, w):
         dist = self.hr / w * self.lv
@@ -123,10 +184,11 @@ class Detect_marker(object):
         f.close()
 
     def going(self, dist):
-        if self.direction:
-            go_count = int(dist + grabParams.move_power_high_left + 0.5)
-        else:
-            go_count = int(dist + grabParams.move_power_high_right + 0.5)
+        # if self.direction:
+        #     go_count = int(dist + grabParams.move_power_high_left + 0.5)
+        # else:
+        #     go_count = int(dist + grabParams.move_power_high_right + 0.5)
+        go_count = int(dist)
         count = 0
         move_cmd = Twist()
         time.sleep(0.5)
@@ -158,10 +220,8 @@ class Detect_marker(object):
 
     # 需要修改为新的放置位置
     def put_down(self):
-        if grabParams.put_down_direction == "right":
-            self.mc.send_coords([15,-192,300,-125,60,152], 70, 0)
-        else:
-            self.mc.send_coords([17,211,260,-90,35,-35], 70, 0)
+        self.mc.send_coords([15,-192,300,-125,60,152], 70, 0)
+        basic.grap(False)
 
     def show_image(self, img):
         if grabParams.debug and args.debug:
@@ -173,20 +233,17 @@ def main():
     detect.run()
     cap = FastVideoCapture(grabParams.cap_num)
     time.sleep(0.5) 
-    while cv2.waitKey(1) < 0 and not done:
+    for i in range(0, 5):
         frame = cap.read()
         frame = detect.transform_frame(frame)
         detect_result = detect.obj_detect(frame)
         if detect_result is None:           
-            continue
+            pass
         else:   
-            dist_aruco = detect.aruco(frame)
-            if dist_aruco != None:       
-                x, y= detect_result
-                real_x, real_y = detect.get_position(x, y)
-                detect.move(0, real_y + grabParams.y_bias, dist_aruco)
-            else:
-                cap.close()
+            x, y, _ = detect_result
+            real_x, real_y = detect.get_position(x, y)
+            detect.move(real_x, real_y + grabParams.y_bias, 0)
+        detect.going(20) # 往前到下一个抓取位置
             
 if __name__ == "__main__":
     main()

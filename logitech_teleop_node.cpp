@@ -62,11 +62,13 @@ void LogTeleop::LogCallback(const sensor_msgs::Joy::ConstPtr& Joy)
 			system("killall -9 python");
 			if(Joy->buttons[4])//button LB
 			{
+				// 调整姿态
 				system("python /home/robuster/beetle_ai/scripts/high.py");
 				printf("high");
 			}
 			else
 			{
+				// 动作
 				system("python /home/robuster/beetle_ai/scripts/grab_high.py");
 				printf("grab_high");
 			}			 
