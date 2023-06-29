@@ -1,3 +1,4 @@
+# 用于自动的调试 改变参数等
 #encoding: UTF-8
 #!/usr/bin/env python2
 import cv2
@@ -63,7 +64,7 @@ class Detect_marker(object):
 
         # 放回
         time.sleep(0.2)
-        self.mc.send_coords(grabParams.coords_pitchdown, 70, 0)
+        self.mc.send_coords([15,-192,300,-125,60,152], 70, 0)
         basic.grap(False) 
         done = True
         self.mc.set_color(0,255,0) #抓取结束，亮绿灯
@@ -86,7 +87,7 @@ class Detect_marker(object):
 
         # 放回
         time.sleep(0.2)
-        self.mc.send_coords(grabParams.coords_pitchdown, 70, 0)
+        self.mc.send_coords([15,-192,300,-125,60,152], 70, 0)
         basic.grap(False) 
         done = True
         self.mc.set_color(0,255,0) #抓取结束，亮绿灯
@@ -233,17 +234,16 @@ def main():
     detect.run()
     cap = FastVideoCapture(grabParams.cap_num)
     time.sleep(0.5) 
-    for i in range(0, 5):
-        frame = cap.read()
-        frame = detect.transform_frame(frame)
-        detect_result = detect.obj_detect(frame)
-        if detect_result is None:           
-            pass
-        else:   
-            x, y, _ = detect_result
-            real_x, real_y = detect.get_position(x, y)
-            detect.move(real_x, real_y + grabParams.y_bias, 0)
-        detect.going(20) # 往前到下一个抓取位置
+    frame = cap.read()
+    frame = detect.transform_frame(frame)
+    detect_result = detect.obj_detect(frame)
+    if detect_result is None:           
+        pass
+    else:   
+        x, y, _ = detect_result
+        real_x, real_y = detect.get_position(x, y)
+        detect.move(real_x, real_y + grabParams.y_bias, 0)
+    detect.going(20) # 往前到下一个抓取位置
             
 if __name__ == "__main__":
     main()
