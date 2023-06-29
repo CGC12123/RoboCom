@@ -18,6 +18,8 @@ class GrabParams(object):
 	# 充能站使用
 	coords_down       = [] # 向下初始状态
 
+	# 放置基准位置
+	coords_pitchdown  = [] #
 
 	y_bias = 5
 	x_bias = 40
@@ -39,6 +41,8 @@ class GrabParams(object):
 
 	grab_right_high   = 0 		# 向右时机械臂的高度
 	grab_right_low    = 0 		# 向右时机械臂的高度
+
+	grab_down         = 0  		# 向下时的机械臂高度
 #夹取机械臂俯仰角调节
 	pitch_low_right    = 10     #低左   的机械臂高度      加+向上   减-向下  以2左右为单位调节   
 	pitch_low_left     = 7      #低右   的机械臂高度      同上
@@ -47,6 +51,8 @@ class GrabParams(object):
 
 	pitch_right_high   = 0 		# 向右时举高机械臂的高度
 	pitch_right_low    = 0 		# 向右时放低机械臂的高度
+
+	pitch_down		   = 0 		# 向下
 #夹取机械臂横滚角调节
 	roll_low_right    = -5      #低左   的机械臂高度      加+向右   减-向左  以2左右为单位调节   
 	roll_low_left     = 0       #低右   的机械臂高度      同上
@@ -56,7 +62,7 @@ class GrabParams(object):
 	roll_right_high   = 0 		# 向右时机械臂的高度
 	roll_right_low    = 0 		# 向右时机械臂的高度
 
-
+	roll_down	      = 0 		# 向下
 
 
 #测距误差抵消     +x 多前进x cm ， -x 少前进x cm 
@@ -71,6 +77,16 @@ class GrabParams(object):
 	classes = ("bird", "clock", "cat","banana ","apple ")
 	#             0       1       2      3        4
 	detect_target = 1
+
+# 目标颜色修改
+	colors = ['red', 'green', 'bule', 'yellow']
+	#           0       1       2        3
+	color = colors[0]
+
+# 字符识别修改
+	characters = ['油', '粮']
+	#              0     1
+	character = characters[0]
 
 grabParams = GrabParams()
 
