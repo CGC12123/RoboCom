@@ -12,16 +12,17 @@ class GrabParams(object):
 	coords_low_left   = [176,  61, 225, -78, 57, -85]
 
 	# 仓库货架使用
-	coords_right_high = [-15.0, -110.3, 280.7, -83.13, 45.29, -170.77] # 向右高初始状态
-	coords_right_low  = [] # 向右低初始状态
-	coords_right_high_pitch = [-7.6, -183.4, 317.4, -90.0, 46.58, -173.93]
+	coords_right_high 		= [-57.9, -109.0, 279.6, -92.57, 44.11, -178.45] # 向右高初始状态
+	coords_right_high_pitch = [-59.1, -164.4, 306.8, -88.35, 45.93, -176.44] # 高层夹取的状态
+	coords_right_low  		= [] # 向右低初始状态
+	coords_right_low_pitch 	= [] # 低层夹取的状态
 
 	# 充能站使用
 	coords_down       = [] # 向下初始状态
 
-	# 放置基准位置
-	coords_pitchdown1  = [-59.5, -33.5, 392.3, -89.36, 46.69, -168.89] # 使其先抬高
-	coords_pitchdown2  = [-173.4, -34.3, 235.5, 174.35, -5.38, 71.52] #
+	# 放置入库位置
+	coords_pitchdown1  = [-59.5, -33.5, 392.3, -89.36, 46.69, -168.89] # 使其先抬高 避免碰撞
+	coords_pitchdown2  = [-173.4, -34.3, 235.5, 174.35, -5.38, 71.52] # 入库
 
 	y_bias = 5
 	x_bias = 40
@@ -51,18 +52,12 @@ class GrabParams(object):
 	pitch_high_right   = 7      #高右   的机械臂高度  
 	pitch_high_left    = 7		#高左   的机械臂高度  
 
-	pitch_right_high   = 0 		# 向右时举高机械臂的高度
-	pitch_right_low    = 0 		# 向右时放低机械臂的高度
-
 	pitch_down		   = 0 		# 向下
 #夹取机械臂横滚角调节
 	roll_low_right    = -5      #低左   的机械臂高度      加+向右   减-向左  以2左右为单位调节   
 	roll_low_left     = 0       #低右   的机械臂高度      同上
 	roll_high_right   = -5      #高右   的机械臂高度  
 	roll_high_left    = 5		#高左   的机械臂高度 
-
-	roll_right_high   = 0 		# 向右时机械臂的高度
-	roll_right_low    = 0 		# 向右时机械臂的高度
 
 	roll_down	      = 0 		# 向下
 

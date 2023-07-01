@@ -42,25 +42,21 @@ class Detect_marker(object):
     # 单点进程 竖直方向初次夹取
     def move(self, x, y, dist):
         global done
+        time.sleep(0.2)
+
+        # 矫正x方向位置
         self.going(x) # x 的误差使用前后移动来弥补
-        time.sleep(0.2)
-
-        # 初步对高位置
-        coords_ori = grabParams.coords_right_high
-        coords_target = [coords_ori[0],  coords_ori[1]+y,  grabParams.grab_right_high, coords_ori[3] + grabParams.pitch_right_high,  coords_ori[4] + grabParams.roll_right_high,  coords_ori[5] - y/2]
-        self.mc.send_coords(coords_target, 70, 0)
-        time.sleep(0.2)
-
+        
         # 抓取
-        mc.send_coords(grabParams.coords_right_high_pitch, 70, 0)
+        self.mc.send_coords(grabParams.coords_right_high_pitch, 70, 0)
         time.sleep(1)
         basic.grap(True)
         time.sleep(1)
 
         # 放回
-        mc.send_coords(grabParams.coords_pitchdown1, 70, 0) # 先抬高
+        self.mc.send_coords(grabParams.coords_pitchdown1, 70, 0) # 先抬高
         time.sleep(0.5)
-        mc.send_coords(grabParams.coords_pitchdown2, 70, 0)
+        self.mc.send_coords(grabParams.coords_pitchdown2, 70, 0)
         time.sleep(1)
         done = True
         self.mc.set_color(0,255,0) #抓取结束，亮绿灯
@@ -298,7 +294,7 @@ def main():
         x, y = detect_result
         real_x, real_y = detect.get_position(x, y)
         print("move")
-        # detect.move(real_/x, real_y + grabParams.y_bias, 0)
+        detect.move(real_x, real_y + grabParams.y_bias, 0)
         # detect.going(20) # 往前到下一个抓取位置
             
 if __name__ == "__main__":
