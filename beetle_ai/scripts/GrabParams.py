@@ -3,19 +3,16 @@
 
 class GrabParams(object):
 #基本参数
-	ratio = 0.214
 	#                   [x   y    z   俯仰  横滚  航向 ]	
-	coords_high_right = [94, -63, 310, -90, 45, -90]
+	coords_high_right = [94, -63, 310, -80, 45, -90]
 	coords_high_left  = [94,  63, 310, -85, 45, -85]
 
 	coords_low_right  = [176, -61, 225, -75, 45, -83]
 	coords_low_left   = [176,  61, 225, -78, 57, -85]
 
 	# 仓库货架使用
-	coords_right_high 		= [-57.9, -109.0, 279.6, -92.57, 44.11, -178.45] # 向右高初始状态
-	coords_right_high_pitch = [-59.1, -164.4, 306.8, -88.35, 45.93, -176.44] # 高层夹取的状态
+	coords_right_high 		= [-50.7, -120.1, 290.6, -85.45, 46.39, -173.88] # 向右高初始状态
 	coords_right_low  		= [] # 向右低初始状态
-	coords_right_low_pitch 	= [] # 低层夹取的状态
 
 	# 充能站使用
 	coords_down       = [] # 向下初始状态
@@ -36,6 +33,13 @@ class GrabParams(object):
 #需要调试的参数
 	cap_num = 2   #摄像头编号
 
+	ratio = 0.8 # 画面中坐标换算为实际前进坐标的值
+
+	bias_right_high_x = 0 	# 向右边夹取时 夹取前后的左右变化 左+右-
+	bias_right_high_y = -80   # 向右边夹取时 夹取前后的前后变化 前-后+
+	bias_right_high_z = 35 	# 向右边夹取时 夹取前后的高度变化 高+低-
+
+	# 以下为旧代码
 	put_down_direction = "left"#放置方向，位于车左还是右
 	grab_low_right    =	287     #低左   的机械臂高度      加+高   减-低  以5为单位调节   
 	grab_low_left     = 277     #低右   的机械臂高度      同上

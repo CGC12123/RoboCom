@@ -41,15 +41,30 @@ class Detect_marker(object):
     # Grasping motion
     # 单点进程 竖直方向初次夹取
     def move(self, x, y, dist):
+        print(x)
         global done
         time.sleep(0.2)
 
         # 矫正x方向位置
-        self.going(x) # x 的误差使用前后移动来弥补
+        # self.going(x * 2) # x 的误差使用前后移动来弥补
+        # time.sleep(0.5)
         
         # 抓取
-        self.mc.send_coords(grabParams.coords_right_high_pitch, 70, 0)
-        time.sleep(1)
+        # 对位置并抬高
+        coords_ori = grabParams.coords_right_high
+        coords_target = [coords_ori[0] + x,  coords_ori[1],  coords_ori[2] + 30, coords_ori[3], coords_ori[4], coords_ori[5]]
+        self.mc.send_coords(coords_target, 70, 0)
+        time.sleep(0.5)
+        # 为了防止卡死先对位置
+        coords_target_2 = [coords_ori[0] + grabParams.bias_right_high_x + x,  coords_ori[1],  
+                           coords_ori[2] + grabParams.bias_right_high_z, coords_ori[3], coords_ori[4], coords_ori[5]]
+        self.mc.send_coords(coords_target_2, 70, 0)
+        time.sleep(0.2)
+        # 移动到目标位置
+        coords_target_3 = [coords_ori[0] + grabParams.bias_right_high_x + x,  coords_ori[1] + grabParams.bias_right_high_y,  
+                           coords_ori[2] + grabParams.bias_right_high_z, coords_ori[3], coords_ori[4], coords_ori[5]]
+        self.mc.send_coords(coords_target_3, 70, 0)
+        time.sleep(0.6)
         basic.grap(True)
         time.sleep(1)
 
@@ -58,8 +73,12 @@ class Detect_marker(object):
         time.sleep(0.5)
         self.mc.send_coords(grabParams.coords_pitchdown2, 70, 0)
         time.sleep(1)
+        basic.grap(False)
         done = True
         self.mc.set_color(0,255,0) #抓取结束，亮绿灯
+
+        time.sleep(0.5)
+        os.system("python beetle_ai/scripts/right.py")
 
         # # 初步对低位置
         # coords_ori = grabParams.coords_right_low
@@ -180,7 +199,9 @@ class Detect_marker(object):
                 x = int((left+right)/2)
                 y = int((top+bottom)/2)
                 w = bottom - top
-                h = right - left    
+                h = right - left
+                cv2.rectangle(img, (int(left), int(top)), (int(right), int(bottom)), (0, 0, 255), 2)
+                cv2.imwrite('test.jpg', img, [cv2.IMWRITE_JPEG_QUALITY, 90])
             else:
                 done = True
                 self.mc.set_color(255,192,203) #识别不到，亮粉灯
@@ -235,25 +256,30 @@ class Detect_marker(object):
         f.close()
 
     def going(self, dist):
+        # 单位为cm
         # if self.direction:
-        #     go_count = int(dist + grabParams.move_power_high_left + 0.5)
+        # go_count = int(dist + grabParams.move_power_high_left + 0.5)
         # else:
-        #     go_count = int(dist + grabParams.move_power_high_right + 0.5)
-        go_count = int(dist)
+        # go_count = int(dist + grabParams.move_power_high_right + 0.5)
+        go_count = int(dist * grabParams.dist_bias)
         count = 0
         move_cmd = Twist()
         time.sleep(0.5)
-        while(1):
-            self.pub.publish(move_cmd)
-            count += 1
+        while True:
             move_cmd.linear.x = 0.1
             move_cmd.angular.z = 0
             if go_count - count < 2:
-                move_cmd.linear.x = 0.05 
+                move_cmd.linear.x = 0.05
                 move_cmd.angular.z = 0
-            if count == go_count:
+            self.pub.publish(move_cmd)
+            count += 1
+            if count >= go_count:
                 break
             self.rate.sleep()
+        # 当循环结束时，手动停止机器人运动
+        move_cmd.linear.x = 0
+        move_cmd.angular.z = 0
+        self.pub.publish(move_cmd)
 
     def back(self):
         count = 6
@@ -286,16 +312,23 @@ def main():
     time.sleep(0.5) 
     # for i in range(0, 5):
     frame = cap.read()
+    frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
     frame = detect.transform_frame(frame)
     detect_result = detect.obj_detect(frame)
     if detect_result is None:  
         pass         
     else:   
         x, y = detect_result
+        print(x, y)
         real_x, real_y = detect.get_position(x, y)
-        print("move")
-        detect.move(real_x, real_y + grabParams.y_bias, 0)
+        # print("move")
+        detect.move(real_x, real_y, 0)
         # detect.going(20) # 往前到下一个抓取位置
+
+def going_test():
+    detect = Detect_marker()
+    detect.going(3)
             
 if __name__ == "__main__":
     main()
+    # going_test()
