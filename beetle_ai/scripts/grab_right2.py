@@ -40,15 +40,9 @@ class Detect_marker(object):
 
     # Grasping motion
     # 单点进程 竖直方向初次夹取
-    def move(self, x, y, dist):
-        print(x)
+    def move_high(self, x, y, dist):
         global done
         time.sleep(0.2)
-
-        # 矫正x方向位置
-        # self.going(x * 2) # x 的误差使用前后移动来弥补
-        # time.sleep(0.5)
-        
         # 抓取
         # 对位置并抬高
         coords_ori = grabParams.coords_right_high
@@ -75,32 +69,41 @@ class Detect_marker(object):
         time.sleep(1)
         basic.grap(False)
         done = True
+        time.sleep(1)
+
         self.mc.set_color(0,255,0) #抓取结束，亮绿灯
 
+    def move_low(self, x, y, dist):
+        
+        # 以下为夹取下层
+        # 抓取
+        coords_ori = grabParams.coords_right_low
+        # 对位置
+        coords_target = [coords_ori[0] + grabParams.bias_right_low_x + x,  coords_ori[1], coords_ori[2], coords_ori[3], coords_ori[4], coords_ori[5]]
+        self.mc.send_coords(coords_target, 70, 0)
+        time.sleep(0.6)
+        coords_target1 = [coords_ori[0] + grabParams.bias_right_low_x + x,  coords_ori[1] + grabParams.bias_right_low_y,  
+                         coords_ori[2] + grabParams.bias_right_low_z, coords_ori[3], coords_ori[4], coords_ori[5]]
+        self.mc.send_coords(coords_target1, 70, 0)
+        time.sleep(0.6)
+        # 夹取
+        basic.grap(True)
         time.sleep(0.5)
-        os.system("python beetle_ai/scripts/right.py")
+        # 退出前抬高
+        coords_target_2 = [coords_ori[0] + grabParams.bias_right_low_x + x,  coords_ori[1] + grabParams.bias_right_low_y + 35,  
+                           coords_ori[2] + grabParams.bias_right_low_z+15, coords_ori[3], coords_ori[4], coords_ori[5]]
+        self.mc.send_coords(coords_target_2, 70, 0)
+        time.sleep(0.2)
 
-        # # 初步对低位置
-        # coords_ori = grabParams.coords_right_low
-        # coords_target = [coords_ori[0],  coords_ori[1]+y,  grabParams.grab_right_low, coords_ori[3] + grabParams.pitch_right_low,  coords_ori[4] + grabParams.roll_right_low,  coords_ori[5] - y/2]
-        # self.mc.send_coords(coords_target, 70, 0)
-        # time.sleep(0.2)
-
-        # # 移动到抓取的位置 写死 （或者用dist？）
-        # coords_grab_target_low = [ ] # 需要先给个预先值 从预先值开始细调 使用误差值_right #########################################################
-        # self.mc.send_coords(coords_grab_target_low, 70, 0)
-        # time.sleep(0.2) # 等待移动到抓取的位置
-
-        # # 抓取
-        # self.mc.set_color(255,0,0)  #抓取，亮红灯
-        # basic.grap(True)
-        # time.sleep(0.4)
-
-        # # 放回
-        # time.sleep(0.2)
-        # self.mc.send_coords(grabParams.coords_pitchdown, 70, 0)
-        # basic.grap(False) 
-        # done = True
+        # 放回
+        self.mc.send_coords(grabParams.coords_pitchdown3, 70, 0) # 先抬高
+        time.sleep(0.5)
+        self.mc.send_coords(grabParams.coords_pitchdown4, 70, 0)
+        time.sleep(1)
+        basic.grap(False)
+        done = True
+        time.sleep(1)
+        
         self.mc.set_color(0,255,0) #抓取结束，亮绿灯
 
     def get_position(self, x, y):
@@ -111,52 +114,6 @@ class Detect_marker(object):
     def transform_frame(self, frame):
         frame, ratio, (dw, dh) = self.yolo.letterbox(frame, (grabParams.IMG_SIZE, grabParams.IMG_SIZE))
         return frame
-   
-    # def obj_detect(self, img):
-    #     global done
-    #     x = y = 0
-    #     w = h = 0
-    #     right_target = 0
-    #     net = cv2.dnn.readNetFromONNX(grabParams.ONNX_MODEL)
-    #     blob = cv2.dnn.blobFromImage(img, 1 / 255.0, (grabParams.IMG_SIZE, grabParams.IMG_SIZE), [0, 0, 0], swapRB=True, crop=False)
-    #     net.setInput(blob)
-    #     outputs = net.forward(net.getUnconnectedOutLayersNames())[0]
-    #     boxes, classes, scores = self.yolo.yolov5_post_process_simple(outputs)
-    #     if boxes is not None:
-    #         for i in range(len(classes)):
-    #             if classes[i] == grabParams.detect_target:
-    #                 self.clazz.append(i)
-    #         if len(self.clazz):
-    #             scores_max = scores[self.clazz[0]]
-    #             right_target = self.clazz[0]
-    #             for i in range(len(self.clazz)):
-    #                 if scores[self.clazz[i]] > scores_max:
-    #                     scores_max = scores[self.clazz[i]]
-    #                     right_target = self.clazz[i]
-    #             self.yolo.draw(img, zip(boxes)[right_target], zip(scores)[right_target], zip(classes)[right_target])
-    #             left, top, right, bottom = boxes[right_target]
-    #             x = int((left+right)/2)
-    #             y = int((top+bottom)/2)
-    #             w = bottom - top
-    #             h = right - left    
-    #         else:
-    #             done = True
-    #             self.mc.set_color(255,192,203) #识别不到，亮粉灯
-    #             return None
-    #     else:
-    #         self.detect_count+=1
-    #         if self.detect_count == 5:
-    #             done = True
-    #             self.mc.set_color(255,192,203) #识别不到，亮粉灯
-    #         return None
-    #     if w > h:
-    #         width = w
-    #     else: 
-    #         width = h
-    #     if x+y > 0:
-    #         return x, y, width
-    #     else:
-    #         return None
 
     def transform_frame(self, frame):
         frame, ratio, (dw, dh) = self.yolo.letterbox(frame, (grabParams.IMG_SIZE, grabParams.IMG_SIZE))
@@ -322,7 +279,28 @@ def main():
         print(x, y)
         real_x, real_y = detect.get_position(x, y)
         # print("move")
-        detect.move(real_x, real_y, 0)
+        detect.move_high(real_x, real_y, 0)
+        # detect.going(20) # 往前到下一个抓取位置
+
+    os.system("python /home/robuster/RoboCom/beetle_ai/scripts/right_low.py --debug")
+    detect = Detect_marker()
+    # detect.run()
+    # cap = FastVideoCapture(grabParams.cap_num)
+    # time.sleep(0.5) 
+    time.sleep(1) # 等待到达位置
+    frame = cap.read()
+    frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
+    frame = detect.transform_frame(frame)
+    detect_result = detect.obj_detect(frame)
+    if detect_result is None:  
+        pass         
+    else:   
+        x, y = detect_result
+        print(x, y)
+        real_x, real_y = detect.get_position(x, y)
+        # print("move")
+        detect.move_low(real_x, real_y, 0)
+    os.system("python beetle_ai/scripts/right.py --debug") # 回到初始状态 
         # detect.going(20) # 往前到下一个抓取位置
 
 def going_test():
