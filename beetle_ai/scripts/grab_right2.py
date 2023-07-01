@@ -51,44 +51,41 @@ class Detect_marker(object):
         self.mc.send_coords(coords_target, 70, 0)
         time.sleep(0.2)
 
-        # 移动到抓取的位置 写死 （或者用dist？）
-        coords_grab_target_high = [ ] # 需要先给个预先值 从预先值开始细调 使用误差值_right #########################################################
-        self.mc.send_coords(coords_grab_target_high, 70, 0)
-        time.sleep(0.2) # 等待移动到抓取的位置
-
         # 抓取
-        self.mc.set_color(255,0,0)  #抓取，亮红灯
+        mc.send_coords(grabParams.coords_right_high_pitch, 70, 0)
+        time.sleep(1)
         basic.grap(True)
-        time.sleep(0.4)
+        time.sleep(1)
 
         # 放回
-        time.sleep(0.2)
-        self.mc.send_coords(grabParams.coords_pitchdown, 70, 0)
-        basic.grap(False) 
+        mc.send_coords(grabParams.coords_pitchdown1, 70, 0) # 先抬高
+        time.sleep(0.5)
+        mc.send_coords(grabParams.coords_pitchdown2, 70, 0)
+        time.sleep(1)
         done = True
         self.mc.set_color(0,255,0) #抓取结束，亮绿灯
 
-        # 初步对低位置
-        coords_ori = grabParams.coords_right_low
-        coords_target = [coords_ori[0],  coords_ori[1]+y,  grabParams.grab_right_low, coords_ori[3] + grabParams.pitch_right_low,  coords_ori[4] + grabParams.roll_right_low,  coords_ori[5] - y/2]
-        self.mc.send_coords(coords_target, 70, 0)
-        time.sleep(0.2)
+        # # 初步对低位置
+        # coords_ori = grabParams.coords_right_low
+        # coords_target = [coords_ori[0],  coords_ori[1]+y,  grabParams.grab_right_low, coords_ori[3] + grabParams.pitch_right_low,  coords_ori[4] + grabParams.roll_right_low,  coords_ori[5] - y/2]
+        # self.mc.send_coords(coords_target, 70, 0)
+        # time.sleep(0.2)
 
-        # 移动到抓取的位置 写死 （或者用dist？）
-        coords_grab_target_low = [ ] # 需要先给个预先值 从预先值开始细调 使用误差值_right #########################################################
-        self.mc.send_coords(coords_grab_target_low, 70, 0)
-        time.sleep(0.2) # 等待移动到抓取的位置
+        # # 移动到抓取的位置 写死 （或者用dist？）
+        # coords_grab_target_low = [ ] # 需要先给个预先值 从预先值开始细调 使用误差值_right #########################################################
+        # self.mc.send_coords(coords_grab_target_low, 70, 0)
+        # time.sleep(0.2) # 等待移动到抓取的位置
 
-        # 抓取
-        self.mc.set_color(255,0,0)  #抓取，亮红灯
-        basic.grap(True)
-        time.sleep(0.4)
+        # # 抓取
+        # self.mc.set_color(255,0,0)  #抓取，亮红灯
+        # basic.grap(True)
+        # time.sleep(0.4)
 
-        # 放回
-        time.sleep(0.2)
-        self.mc.send_coords(grabParams.coords_pitchdown, 70, 0)
-        basic.grap(False) 
-        done = True
+        # # 放回
+        # time.sleep(0.2)
+        # self.mc.send_coords(grabParams.coords_pitchdown, 70, 0)
+        # basic.grap(False) 
+        # done = True
         self.mc.set_color(0,255,0) #抓取结束，亮绿灯
 
     def get_position(self, x, y):
@@ -100,16 +97,77 @@ class Detect_marker(object):
         frame, ratio, (dw, dh) = self.yolo.letterbox(frame, (grabParams.IMG_SIZE, grabParams.IMG_SIZE))
         return frame
    
+    # def obj_detect(self, img):
+    #     global done
+    #     x = y = 0
+    #     w = h = 0
+    #     right_target = 0
+    #     net = cv2.dnn.readNetFromONNX(grabParams.ONNX_MODEL)
+    #     blob = cv2.dnn.blobFromImage(img, 1 / 255.0, (grabParams.IMG_SIZE, grabParams.IMG_SIZE), [0, 0, 0], swapRB=True, crop=False)
+    #     net.setInput(blob)
+    #     outputs = net.forward(net.getUnconnectedOutLayersNames())[0]
+    #     boxes, classes, scores = self.yolo.yolov5_post_process_simple(outputs)
+    #     if boxes is not None:
+    #         for i in range(len(classes)):
+    #             if classes[i] == grabParams.detect_target:
+    #                 self.clazz.append(i)
+    #         if len(self.clazz):
+    #             scores_max = scores[self.clazz[0]]
+    #             right_target = self.clazz[0]
+    #             for i in range(len(self.clazz)):
+    #                 if scores[self.clazz[i]] > scores_max:
+    #                     scores_max = scores[self.clazz[i]]
+    #                     right_target = self.clazz[i]
+    #             self.yolo.draw(img, zip(boxes)[right_target], zip(scores)[right_target], zip(classes)[right_target])
+    #             left, top, right, bottom = boxes[right_target]
+    #             x = int((left+right)/2)
+    #             y = int((top+bottom)/2)
+    #             w = bottom - top
+    #             h = right - left    
+    #         else:
+    #             done = True
+    #             self.mc.set_color(255,192,203) #识别不到，亮粉灯
+    #             return None
+    #     else:
+    #         self.detect_count+=1
+    #         if self.detect_count == 5:
+    #             done = True
+    #             self.mc.set_color(255,192,203) #识别不到，亮粉灯
+    #         return None
+    #     if w > h:
+    #         width = w
+    #     else: 
+    #         width = h
+    #     if x+y > 0:
+    #         return x, y, width
+    #     else:
+    #         return None
+
+    def transform_frame(self, frame):
+        frame, ratio, (dw, dh) = self.yolo.letterbox(frame, (grabParams.IMG_SIZE, grabParams.IMG_SIZE))
+
+        return frame
+
+    #图像处理，适配物体识别
+    def transform_frame_128(self, frame):
+        frame, ratio, (dw, dh) = self.yolo.letterbox(frame, (128, 128))
+
+        return frame
+
     def obj_detect(self, img):
-        global done
-        x = y = 0
-        w = h = 0
+        x=y=0
+        img_ori = img
+        img_ori = self.transform_frame(img)
+        img = self.transform_frame_128(img)
+
         right_target = 0
         net = cv2.dnn.readNetFromONNX(grabParams.ONNX_MODEL)
         blob = cv2.dnn.blobFromImage(img, 1 / 255.0, (grabParams.IMG_SIZE, grabParams.IMG_SIZE), [0, 0, 0], swapRB=True, crop=False)
         net.setInput(blob)
         outputs = net.forward(net.getUnconnectedOutLayersNames())[0]
         boxes, classes, scores = self.yolo.yolov5_post_process_simple(outputs)
+
+        # img_0 = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
         if boxes is not None:
             for i in range(len(classes)):
                 if classes[i] == grabParams.detect_target:
@@ -131,20 +189,17 @@ class Detect_marker(object):
                 done = True
                 self.mc.set_color(255,192,203) #识别不到，亮粉灯
                 return None
-        else:
-            self.detect_count+=1
-            if self.detect_count == 5:
-                done = True
-                self.mc.set_color(255,192,203) #识别不到，亮粉灯
-            return None
-        if w > h:
-            width = w
-        else: 
-            width = h
+
+
+        # Print time (inference-only)
+        # print("time: " + str(t2-t1) + "s")  
+
+      
         if x+y > 0:
-            return x, y, width
+            return x, y
         else:
             return None
+        
 
     def distance(self, w):
         dist = self.hr / w * self.lv
@@ -230,20 +285,21 @@ class Detect_marker(object):
         
 def main():
     detect = Detect_marker()
-    detect.run()
+    # detect.run()
     cap = FastVideoCapture(grabParams.cap_num)
     time.sleep(0.5) 
-    for i in range(0, 5):
-        frame = cap.read()
-        frame = detect.transform_frame(frame)
-        detect_result = detect.obj_detect(frame)
-        if detect_result is None:           
-            pass
-        else:   
-            x, y, _ = detect_result
-            real_x, real_y = detect.get_position(x, y)
-            detect.move(real_x, real_y + grabParams.y_bias, 0)
-        detect.going(20) # 往前到下一个抓取位置
+    # for i in range(0, 5):
+    frame = cap.read()
+    frame = detect.transform_frame(frame)
+    detect_result = detect.obj_detect(frame)
+    if detect_result is None:  
+        pass         
+    else:   
+        x, y = detect_result
+        real_x, real_y = detect.get_position(x, y)
+        print("move")
+        # detect.move(real_/x, real_y + grabParams.y_bias, 0)
+        # detect.going(20) # 往前到下一个抓取位置
             
 if __name__ == "__main__":
     main()

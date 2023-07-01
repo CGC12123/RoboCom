@@ -12,26 +12,28 @@ class GrabParams(object):
 	coords_low_left   = [176,  61, 225, -78, 57, -85]
 
 	# 仓库货架使用
-	coords_right_high = [] # 向右高初始状态
+	coords_right_high = [-15.0, -110.3, 280.7, -83.13, 45.29, -170.77] # 向右高初始状态
 	coords_right_low  = [] # 向右低初始状态
+	coords_right_high_pitch = [-7.6, -183.4, 317.4, -90.0, 46.58, -173.93]
 
 	# 充能站使用
 	coords_down       = [] # 向下初始状态
 
 	# 放置基准位置
-	coords_pitchdown  = [] #
+	coords_pitchdown1  = [-59.5, -33.5, 392.3, -89.36, 46.69, -168.89] # 使其先抬高
+	coords_pitchdown2  = [-173.4, -34.3, 235.5, 174.35, -5.38, 71.52] #
 
 	y_bias = 5
 	x_bias = 40
 	debug = True #True         
 	ONNX_MODEL = '/home/robuster/beetle_ai/scripts/beetle_obj.onnx'
-	IMG_SIZE = 640
+	IMG_SIZE = 128
 	done = False
 	usb_dev = "/dev/arm" 
 	baudrate = 115200
 
 #需要调试的参数
-	cap_num = 3   #摄像头编号
+	cap_num = 2   #摄像头编号
 
 	put_down_direction = "left"#放置方向，位于车左还是右
 	grab_low_right    =	287     #低左   的机械臂高度      加+高   减-低  以5为单位调节   
@@ -74,9 +76,9 @@ class GrabParams(object):
 #物块放置测距误差，基本不用动
 	set_diff = 0
 #判断识别物是否是目标，  对应数字，改detect_target
-	classes = ("bird", "clock", "cat","banana ","apple ")
+	classes = ("apple", "clock", "banana","cat ","bird ")
 	#             0       1       2      3        4
-	detect_target = 1
+	detect_target = 0
 
 # 目标颜色修改
 	colors = ['red', 'green', 'bule', 'yellow']

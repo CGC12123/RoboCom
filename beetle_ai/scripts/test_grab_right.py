@@ -53,7 +53,7 @@ class Detect_marker(object):
         time.sleep(0.2)
 
         # 移动到抓取的位置 写死 （或者用dist？）
-        coords_grab_target_high = [ ] # 需要先给个预先值 从预先值开始细调 使用误差值_right #########################################################
+        coords_grab_target_high = grabParams.coords_right_high # 需要先给个预先值 从预先值开始细调 使用误差值_right #########################################################
         self.mc.send_coords(coords_grab_target_high, 70, 0)
         time.sleep(0.2) # 等待移动到抓取的位置
 
