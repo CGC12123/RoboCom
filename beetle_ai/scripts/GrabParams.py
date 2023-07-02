@@ -17,7 +17,7 @@ class GrabParams(object):
 	coords_left_low   = [53.7, 132.0, 220.0, -85.93, 48.13, 7.59] # 向左低初始状态
 
 	# 充能站使用
-	coords_down       = [] # 向下初始状态
+	coords_under      = [] # 向下初始状态
 
 	# 放置入库位置
 	# 1234为向右夹取时的参数 5678为向左
@@ -26,6 +26,14 @@ class GrabParams(object):
 
 	coords_pitchdown3 = [-75.1, -123.8, 242.3, -94.27, 41.43, 178.41] # 使其撤出来 避免碰撞
 	coords_pitchdown4 = [-173.4, -34.3, 230.5, 174.35, -5.38, 71.52] # 入库
+
+	coords_pitchdown5 = [-59.5, -33.5, 392.3, -89.36, 46.69, -168.89] # 使其先抬高 避免碰撞 左侧夹取时使用 为较高的架子 可调可不调
+	coords_pitchdown6 = [-173.4, -34.3, 235.5, 174.35, -5.38, 71.52] # 入库
+
+	coords_pitchdown7 = [-75.1, -123.8, 242.3, -94.27, 41.43, 178.41] # 使其撤出来 避免碰撞
+	coords_pitchdown8 = [-173.4, -34.3, 230.5, 174.35, -5.38, 71.52] # 入库
+
+	coords_pitchdown9 = [-173.4, -34.3, 230.5, 174.35, -5.38, 71.52] # 入库 充能站使用
 
 	y_bias = 5
 	x_bias = 40
@@ -56,8 +64,12 @@ class GrabParams(object):
 	bias_left_high_z = 37 	# 向左边夹取时 夹取前后的高度变化 高+低-
 
 	bias_left_low_x = 0 	# 向左边夹取时 夹取前后的左右变化 左+右-
-	bias_left_low_y = 53   # 向左边夹取时 夹取前后的前后变化 前+后-
+	bias_left_low_y = 53   	# 向左边夹取时 夹取前后的前后变化 前+后-
 	bias_left_low_z = 30 	# 向左边夹取时 夹取前后的高度变化 高+低-
+
+	bias_under_x = 0 		# 向下夹取时 夹取前后的左右变化 左+右-
+	bias_under_y = 0    	# 向下夹取时 夹取前后的前后变化 前+后-
+	bias_under_z = 0 		# 向下夹取时 夹取前后的高度变化 高+低-
 
 	# 以下为旧代码参数 待整理
 	put_down_direction = "left"#放置方向，位于车左还是右
@@ -102,7 +114,7 @@ class GrabParams(object):
 # 目标颜色修改
 	colors = ['red', 'green', 'bule', 'yellow']
 	#           0       1       2        3
-	color = colors[0]
+	color = 0
 
 # 字符识别修改
 	characters = ['油', '粮']

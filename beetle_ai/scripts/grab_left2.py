@@ -63,9 +63,9 @@ class Detect_marker(object):
         time.sleep(1)
 
         # 放回
-        self.mc.send_coords(grabParams.coords_pitchdown1, 70, 0) # 先抬高
+        self.mc.send_coords(grabParams.coords_pitchdown5, 70, 0) # 先抬高
         time.sleep(0.5)
-        self.mc.send_coords(grabParams.coords_pitchdown2, 70, 0)
+        self.mc.send_coords(grabParams.coords_pitchdown6, 70, 0)
         time.sleep(1)
         basic.grap(False)
         done = True
@@ -96,9 +96,9 @@ class Detect_marker(object):
         time.sleep(0.2)
 
         # 放回
-        self.mc.send_coords(grabParams.coords_pitchdown3, 70, 0) # 先抬高
+        self.mc.send_coords(grabParams.coords_pitchdown7, 70, 0) # 先抬高
         time.sleep(0.5)
-        self.mc.send_coords(grabParams.coords_pitchdown4, 70, 0)
+        self.mc.send_coords(grabParams.coords_pitchdown8, 70, 0)
         time.sleep(1)
         basic.grap(False)
         done = True
