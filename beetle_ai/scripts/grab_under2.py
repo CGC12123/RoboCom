@@ -30,13 +30,19 @@ class Detect_marker(object):
         self.mc.power_on() 
         self.yolo = yolo()
         self.c_x, self.c_y = grabParams.IMG_SIZE/2, grabParams.IMG_SIZE/2
-        self.ratio = grabParams.ratio
+        self.ratio_color = grabParams.ratio_color
         self.lv = 940
         self.hr = 2.1
         self.detect_count = 0
         self.clazz = []
         self.direction = 0 
         self.aruco_count = 0
+        self.color_dist = { 'blue': {'lower':np.array([84, 109, 204]), 'high':np.array([106,255,255])},
+                            'red': {'lower':np.array([147, 80, 220]), 'high':np.array([179,255,255])},
+                            'yellow': {'lower':np.array([15, 141, 204]), 'high':np.array([44,255,255])},
+                            'green': {'lower':np.array([59, 82, 78]), 'high':np.array([87,150,255])},
+                            'purple': {'lower':np.array([0, 91, 127]), 'high':np.array([179,255,255])},
+                        }
 
     # Grasping motion
     def move(self, x, y, dist):
@@ -47,19 +53,26 @@ class Detect_marker(object):
         coords_ori = grabParams.coords_under
         # 先对位置
         coords_target = [coords_ori[0] + x,  coords_ori[1] + y,  coords_ori[2], coords_ori[3], coords_ori[4], coords_ori[5]]
-        self.mc.send_coords(coords_target, 70, 0)
+        self.mc.send_coords(coords_target, 50, 0)
         time.sleep(0.5)
         # 移动到目标位置并夹取
-        coords_target_3 = [coords_ori[0] + grabParams.bias_under_x + x,  coords_ori[1] + grabParams.bias_under_y + y,  
+        # 分两步
+        coords_target_3 = [coords_ori[0] + x,  coords_ori[1] + grabParams.bias_under_y + y,  
+                           coords_ori[2], coords_ori[3], coords_ori[4], coords_ori[5]]
+        self.mc.send_coords(coords_target_3, 50, 0)
+
+        coords_target_4 = [coords_ori[0] + grabParams.bias_under_x + x,  coords_ori[1] + grabParams.bias_under_y + y,  
                            coords_ori[2] + grabParams.bias_under_z, coords_ori[3], coords_ori[4], coords_ori[5]]
-        self.mc.send_coords(coords_target_3, 70, 0)
-        time.sleep(0.6)
+        self.mc.send_coords(coords_target_4, 50, 0)
+        time.sleep(1)
         basic.grap(True)
         time.sleep(1)
 
         # 放回
         self.mc.send_coords(grabParams.coords_pitchdown9, 70, 0)
         time.sleep(1)
+        self.mc.send_coords(grabParams.coords_pitchdown10, 70, 0)
+        time.sleep(2)
         basic.grap(False)
         done = True
         time.sleep(1)
@@ -67,8 +80,8 @@ class Detect_marker(object):
         self.mc.set_color(0,255,0) #抓取结束，亮绿灯
 
     def get_position(self, x, y):
-        wx = (self.c_x - x) * self.ratio
-        wy = (y - self.c_y) * self.ratio
+        wx = (self.c_x - x) * self.ratio_color
+        wy = (y - self.c_y) * self.ratio_color
         return wx, wy
             
     def transform_frame(self, frame):
@@ -89,7 +102,7 @@ class Detect_marker(object):
     def obj_detect(self, img, color):
         low = self.color_dist[color]['lower'] # 阈值设置
         high = self.color_dist[color]['high']
-
+        cv2.imwrite("color_ori.jpg", img)
         image_gaussian = cv2.GaussianBlur(img, (5, 5), 0)     # 高斯滤波
         imgHSV = cv2.cvtColor(image_gaussian, cv2.COLOR_BGR2HSV) # 转换色彩空间
 
@@ -97,12 +110,15 @@ class Detect_marker(object):
         mask = cv2.erode(imgHSV, kernel, iterations=2)
         mask = cv2.dilate(mask, kernel, iterations=1)
         mask = cv2.inRange(mask, low, high)
+        cv2.imwrite("color_after.jpg", mask)
         cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2] # 检测外轮廓
+        print(1)
         try:
             max_contour = max(cnts, key=cv2.contourArea)
             rect = cv2.minAreaRect(max_contour)
             box = cv2.boxPoints(rect)
             cv2.drawContours(img, [np.int0(box)], -1, (0, 255, 255), 2)
+            cv2.imwrite("color dectet.jpg", img)
             left_point_x = np.min(box[:, 0])
             right_point_x = np.max(box[:, 0])
             top_point_y = np.min(box[:, 1])
@@ -218,7 +234,12 @@ def main():
     frame = detect.transform_frame(frame)
     detect_result = detect.obj_detect(frame, color = grabParams.colors[grabParams.color])
     if detect_result is None:  
-        pass         
+        cap = FastVideoCapture(grabParams.cap_num)
+        time.sleep(0.5)
+        frame = cap.read()
+        frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
+        frame = detect.transform_frame(frame)
+        detect_result = detect.obj_detect(frame, color = grabParams.colors[grabParams.color])         
     else:   
         x, y = detect_result
         print(x, y)

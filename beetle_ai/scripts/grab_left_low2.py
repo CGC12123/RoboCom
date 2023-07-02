@@ -40,38 +40,38 @@ class Detect_marker(object):
 
     # Grasping motion
     # 单点进程 竖直方向初次夹取
-    def move_high(self, x, y, dist):
+    def move_low(self, x, y, dist):
         global done
         time.sleep(0.2)
         self.mc.set_color(200,0,0) #抓取开始，亮红灯
         # 抓取
         # 对位置并抬高
-        coords_ori = grabParams.coords_left_high
+        coords_ori = grabParams.coords_left_low
         '''
         coords_target = [coords_ori[0] + x,  coords_ori[1],  coords_ori[2] + 20, coords_ori[3], coords_ori[4], coords_ori[5]]
         self.mc.send_coords(coords_target, 70, 0)
         time.sleep(0.5)
         # 为了防止卡死先对位置
-        coords_target_2 = [coords_ori[0] + grabParams.bias_left_high_x + x,  coords_ori[1],  
-                           coords_ori[2] + grabParams.bias_left_high_z, coords_ori[3], coords_ori[4], coords_ori[5]]
+        coords_target_2 = [coords_ori[0] + grabParams.bias_left_low_x + x,  coords_ori[1],  
+                           coords_ori[2] + grabParams.bias_left_low_z, coords_ori[3], coords_ori[4], coords_ori[5]]
         self.mc.send_coords(coords_target_2, 70, 0)
         time.sleep(0.2)
         '''
         # 移动到目标位置
-        coords_target_3 = [coords_ori[0] + grabParams.bias_left_high_x + x,  coords_ori[1] + grabParams.bias_left_high_y,  
-                           coords_ori[2] + grabParams.bias_left_high_z, coords_ori[3], coords_ori[4], coords_ori[5]]
+        coords_target_3 = [coords_ori[0] + grabParams.bias_left_low_x + x,  coords_ori[1] + grabParams.bias_left_low_y,  
+                           coords_ori[2] + grabParams.bias_left_low_z, coords_ori[3], coords_ori[4], coords_ori[5]]
         self.mc.send_coords(coords_target_3, 70, 0)
         time.sleep(0.6)
         basic.grap(True)
         time.sleep(1)
 
         # 放回
-        coords_target_4 = [coords_ori[0] + grabParams.bias_left_high_x + x,  coords_ori[1] + grabParams.bias_left_high_y - 55,  
-                           coords_ori[2] + grabParams.bias_left_high_z + 45, coords_ori[3], coords_ori[4], coords_ori[5]]
+        coords_target_4 = [coords_ori[0] + grabParams.bias_left_low_x + x,  coords_ori[1] + grabParams.bias_left_low_y - 55,  
+                           coords_ori[2] + grabParams.bias_left_low_z + 35, coords_ori[3], coords_ori[4], coords_ori[5]]
         self.mc.send_coords(coords_target_4, 70, 0) # 先抬高
         time.sleep(0.5)
-        # coords_target_4 = [coords_ori[0] + grabParams.bias_left_high_x + x,  coords_ori[1] + grabParams.bias_left_high_y - 40,  
-        #                    coords_ori[2] + grabParams.bias_left_high_z + 30, coords_ori[3], coords_ori[4], coords_ori[5]]
+        # coords_target_4 = [coords_ori[0] + grabParams.bias_left_low_x + x,  coords_ori[1] + grabParams.bias_left_low_y - 40,  
+        #                    coords_ori[2] + grabParams.bias_left_low_z + 30, coords_ori[3], coords_ori[4], coords_ori[5]]
         # self.mc.send_coords(coords_target_4, 70, 0) # 抬高后后撤
         # time.sleep(0.3)
         self.mc.send_coords(grabParams.coords_pitchdown6, 80, 0)
@@ -81,7 +81,8 @@ class Detect_marker(object):
         time.sleep(1)
 
         self.mc.set_color(0,255,0) #抓取结束，亮绿灯
-        
+
+
     def get_position(self, x, y):
         wx = (self.c_x - x) * self.ratio
         wy = (y - self.c_y) * self.ratio
@@ -228,8 +229,8 @@ def main():
     #     # detect.going(10) # 往前到下一个抓取位置
     real_x = 0
     real_y = 0
-    detect.move_high(real_x, real_y, 0)
-    os.system("python /home/robuster/RoboCom/beetle_ai/scripts/left.py --debug")
+    detect.move_low(real_x, real_y, 0)
+    os.system("python /home/robuster/RoboCom/beetle_ai/scripts/left_low.py")
             
 if __name__ == "__main__":
     main()
