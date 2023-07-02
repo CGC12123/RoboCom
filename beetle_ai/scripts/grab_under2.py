@@ -102,7 +102,6 @@ class Detect_marker(object):
     def obj_detect(self, img, color):
         low = self.color_dist[color]['lower'] # 阈值设置
         high = self.color_dist[color]['high']
-        cv2.imwrite("color_ori.jpg", img)
         image_gaussian = cv2.GaussianBlur(img, (5, 5), 0)     # 高斯滤波
         imgHSV = cv2.cvtColor(image_gaussian, cv2.COLOR_BGR2HSV) # 转换色彩空间
 
@@ -110,7 +109,6 @@ class Detect_marker(object):
         mask = cv2.erode(imgHSV, kernel, iterations=2)
         mask = cv2.dilate(mask, kernel, iterations=1)
         mask = cv2.inRange(mask, low, high)
-        cv2.imwrite("color_after.jpg", mask)
         cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2] # 检测外轮廓
         print(1)
         try:
@@ -118,7 +116,7 @@ class Detect_marker(object):
             rect = cv2.minAreaRect(max_contour)
             box = cv2.boxPoints(rect)
             cv2.drawContours(img, [np.int0(box)], -1, (0, 255, 255), 2)
-            cv2.imwrite("color dectet.jpg", img)
+            cv2.imwrite("../img/color/dectet.jpg", img)
             left_point_x = np.min(box[:, 0])
             right_point_x = np.max(box[:, 0])
             top_point_y = np.min(box[:, 1])

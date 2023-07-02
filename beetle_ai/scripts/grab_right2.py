@@ -158,7 +158,7 @@ class Detect_marker(object):
                 w = bottom - top
                 h = right - left
                 cv2.rectangle(img, (int(left), int(top)), (int(right), int(bottom)), (0, 0, 255), 2)
-                cv2.imwrite('test.jpg', img, [cv2.IMWRITE_JPEG_QUALITY, 90])
+                cv2.imwrite('../img/obj/target.jpg', img, [cv2.IMWRITE_JPEG_QUALITY, 90])
             else:
                 done = True
                 self.mc.set_color(255,192,203) #识别不到，亮粉灯

@@ -13,7 +13,8 @@ import math
 from GrabParams import grabParams
 import basic
 import argparse
-import pytesseract
+# import pytesseract
+
 
 parser = argparse.ArgumentParser(description='manual to this script')
 parser.add_argument("--debug", type=bool, default="False")
@@ -92,35 +93,35 @@ class Detect_marker(object):
         return frame
 
 
-    def obj_detect(self, img):
-        img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        # 指定 tesseract 命令路径和语言模型
-        tesseract_cmd = '/usr/bin/tesseract'
-        lang = 'chi_sim'
+#     def obj_detect(self, img):
+#         img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+#         # 指定 tesseract 命令路径和语言模型
+#         tesseract_cmd = '/usr/bin/tesseract'
+#         lang = 'chi_sim'
 
-        # 读取图片
-        img = Image.open('/home/robuster/RoboCom/oi.jpg')
+#         # 读取图片
+#         img = Image.open('/home/robuster/RoboCom/oi.jpg')
 
-        # 将图像数据通过标准输入传递给 tesseract
-        # 将图片转换为字符串及边界框信息
-        p = subprocess.Popen([tesseract_cmd, 'stdin', 'stdout', '-psm', '6', lang, 'box'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = p.communicate(img.tobytes())
+#         # 将图像数据通过标准输入传递给 tesseract
+#         # 将图片转换为字符串及边界框信息
+#         p = subprocess.Popen([tesseract_cmd, 'stdin', 'stdout', '-psm', '6', lang, 'box'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+#         out, err = p.communicate(img.tobytes())
 
-# 将字节串列表转换为字符串列表
-        boxes = [box.decode('utf-8') for box in out.strip().split('\n')]
+# # 将字节串列表转换为字符串列表
+#         boxes = [box.decode('utf-8') for box in out.strip().split('\n')]
 
-        for box in boxes.splitlines():
-            # print(box)
-            box = box.split(' ')
-            if box[0] == grabParams.character[0] or box[0] == grabParams.characters[character]:
-                x, y, w, h = int(box[1]), int(box[2]), int(box[3]), int(box[4])
-                cv2.rectangle(img, (x, 640 - y), (w, 480 - h), (0, 0, 255), 2)
-                cv2.imwrite("character_detect", img)
+#         for box in boxes.splitlines():
+#             # print(box)
+#             box = box.split(' ')
+#             if box[0] == grabParams.character[0] or box[0] == grabParams.characters[character]:
+#                 x, y, w, h = int(box[1]), int(box[2]), int(box[3]), int(box[4])
+#                 cv2.rectangle(img, (x, 640 - y), (w, 480 - h), (0, 0, 255), 2)
+#                 cv2.imwrite("character_detect", img)
 
-                target_x = (x + w)/2
-                target_y = (640 + 480)/2
-                return target_x, target_y
-        return None
+#                 target_x = (x + w)/2
+#                 target_y = (640 + 480)/2
+#                 return target_x, target_y
+#         return None
 
     def distance(self, w):
         dist = self.hr / w * self.lv
@@ -211,21 +212,6 @@ class Detect_marker(object):
         
 def main():
     detect = Detect_marker()
-    # detect.run()
-    # cap = FastVideoCapture(grabParams.cap_num)
-    # time.sleep(0.5) 
-    # frame = cap.read()
-    # frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
-    # frame = detect.transform_frame(frame)
-    # detect_result = detect.obj_detect(frame)
-    # if detect_result is None:  
-    #     pass         
-    # else:   
-    #     x, y = detect_result
-    #     print(x, y)
-    #     real_x, real_y = detect.get_position(x, y)
-    #     detect.move_high(real_x, real_y, 0)
-    #     # detect.going(10) # 往前到下一个抓取位置
     real_x = 0
     real_y = 0
     detect.move_high(real_x, real_y, 0)

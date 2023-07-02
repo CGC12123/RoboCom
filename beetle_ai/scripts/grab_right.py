@@ -5,7 +5,7 @@ import os, time
 
 def grab_right():
     os.system(
-        "python /home/robuster/beetle_ai/scripts/grab_right2.py  --debug ''  "
+        "python /home/robuster/RoboCom/beetle_ai/scripts/grab_right2.py  --debug ''  "
     )
 
 t = threading.Thread(target=grab_right,name='grab_right')
