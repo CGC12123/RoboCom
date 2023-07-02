@@ -13,8 +13,8 @@ class GrabParams(object):
 	# 仓库货架使用
 	coords_right_high = [-50.7, -120.1, 290.6, -85.45, 46.39, -173.88] # 向右高初始状态
 	coords_right_low  = [-54.9, -140.4, 214.0, -90.25, 47.02, -175.88] # 向右低初始状态
-	coords_left_high  = [53.7, 132.0, 287.4, -85.93, 48.13, 7.59] # 向左高初始状态
-	coords_left_low   = [] # 向左低初始状态
+	coords_left_high  = [53.7, 112.0, 318.0, -85.93, 48.13, 7.59] # 向左高初始状态
+	coords_left_low   = [53.7, 132.0, 220.0, -85.93, 48.13, 7.59] # 向左低初始状态
 
 	# 充能站使用
 	coords_down       = [] # 向下初始状态
@@ -25,7 +25,7 @@ class GrabParams(object):
 	coords_pitchdown2 = [-173.4, -34.3, 235.5, 174.35, -5.38, 71.52] # 入库
 
 	coords_pitchdown3 = [-75.1, -123.8, 242.3, -94.27, 41.43, 178.41] # 使其撤出来 避免碰撞
-	coords_pitchdown4 = [-173.4, -34.3, 235.5, 174.35, -5.38, 71.52] # 入库
+	coords_pitchdown4 = [-173.4, -34.3, 230.5, 174.35, -5.38, 71.52] # 入库
 
 	y_bias = 5
 	x_bias = 40
@@ -52,8 +52,12 @@ class GrabParams(object):
 	bias_right_low_z = 25 	# 向右边夹取时 夹取前后的高度变化 高+低-
 
 	bias_left_high_x = 0 	# 向左边夹取时 夹取前后的左右变化 左+右-
-	bias_left_high_y = 50   # 向左边夹取时 夹取前后的前后变化 前+后-
-	bias_left_high_z = 45 	# 向左边夹取时 夹取前后的高度变化 高+低-
+	bias_left_high_y = 58   # 向左边夹取时 夹取前后的前后变化 前+后-
+	bias_left_high_z = 37 	# 向左边夹取时 夹取前后的高度变化 高+低-
+
+	bias_left_low_x = 0 	# 向左边夹取时 夹取前后的左右变化 左+右-
+	bias_left_low_y = 53   # 向左边夹取时 夹取前后的前后变化 前+后-
+	bias_left_low_z = 30 	# 向左边夹取时 夹取前后的高度变化 高+低-
 
 	# 以下为旧代码参数 待整理
 	put_down_direction = "left"#放置方向，位于车左还是右

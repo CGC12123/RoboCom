@@ -118,7 +118,21 @@ class Detect_marker(object):
 
     def obj_detect(self, img):
         img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        boxes = pytesseract.image_to_boxes(img_gray)
+        # tesseract_cmd = '/usr/bin/tesseract'
+        # boxes = pytesseract.image_to_boxes(img_gray)
+
+        # 指定 Tesseract OCR 引擎的可执行文件路径
+        sseract_cmd = '/usr/bin/tesseract'
+
+        # 读取图片
+        img = Image.open('test.png')
+
+        # 执行 OCR
+        text = pytesseract.image_to_string(img, config='-psm 6', lang='eng', boxes=False, exe=tesseract_cmd)
+
+        # 输出识别结果
+        print("OCR Result: %s" % text)
+
         for box in boxes.splitlines():
             # print(box)
             box = box.split(' ')
