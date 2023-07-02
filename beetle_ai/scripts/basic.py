@@ -11,7 +11,7 @@ angular = 0 # linear  = 1
 def grap(flag):
     if flag:
         # close
-        mc.set_gripper_value(40,90)
+        mc.set_gripper_value(20,90)
     else:
         # open
         mc.set_gripper_value(255,90)

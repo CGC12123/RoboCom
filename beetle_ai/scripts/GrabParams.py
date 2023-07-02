@@ -3,36 +3,79 @@
 
 class GrabParams(object):
 #基本参数
-	ratio = 0.214
 	#                   [x   y    z   俯仰  横滚  航向 ]	
-	coords_high_right = [94, -63, 310, -90, 45, -90]
+	coords_high_right = [94, -63, 310, -80, 45, -90]
 	coords_high_left  = [94,  63, 310, -85, 45, -85]
 
 	coords_low_right  = [176, -61, 225, -75, 45, -83]
 	coords_low_left   = [176,  61, 225, -78, 57, -85]
 
 	# 仓库货架使用
-	coords_right_high = [] # 向右高初始状态
-	coords_right_low  = [] # 向右低初始状态
+	coords_right_high = [-50.7, -120.1, 290.6, -85.45, 46.39, -173.88] # 向右高初始状态
+	coords_right_low  = [-54.9, -140.4, 214.0, -90.25, 47.02, -175.88] # 向右低初始状态
+
+	# 公共区使用
+	coords_left_high  = [53.7, 112.0, 318.0, -85.93, 48.13, 7.59] # 向左高初始状态
+	coords_left_low   = [53.7, 112.0, 220.0, -85.93, 48.13, 7.59] # 向左低初始状态
 
 	# 充能站使用
-	coords_down       = [] # 向下初始状态
+	coords_under      = [51.8, 170.7, 240, -179.16, 3.07, -45.73] # 向下初始状态
 
-	# 放置基准位置
-	coords_pitchdown  = [] #
+	# 放置入库位置
+	# 1234为向右夹取时的参数 5678为向左
+	coords_pitchdown1 	= [-59.5, -33.5, 392.3, -89.36, 46.69, -168.89] # 使其先抬高 避免碰撞
+	coords_pitchdown2 	= [-173.4, -34.3, 235.5, 174.35, -5.38, 71.52] # 入库
+
+	coords_pitchdown3 	= [-75.1, -123.8, 242.3, -94.27, 41.43, 178.41] # 使其撤出来 避免碰撞
+	coords_pitchdown4 	= [-173.4, -34.3, 230.5, 174.35, -5.38, 71.52] # 入库
+
+	coords_pitchdown5 	= [106.9, 94.9, 368.9, -95.48, 54.7, -25.65] # 使其先抬高 避免碰撞 左侧夹取时使用 为较高的架子 可调可不调
+	coords_pitchdown6 	= [-173.4, -34.3, 235.5, 174.35, -5.38, 71.52] # 入库
+
+	coords_pitchdown7 	= [12.6, 156.9, 248.6, -93.1, 50.42, 2.12] # 使其撤出来 避免碰撞
+	coords_pitchdown8 	= [-173.4, -34.3, 230.5, 174.35, -5.38, 71.52] # 入库
+
+	coords_pitchdown9 	= [90.7, 163.5, 280.4, -170.98, 3.41, -60.23] # 使其撤出来 避免碰撞
+	coords_pitchdown10	= [-173.4, -34.3, 230.5, 174.35, -5.38, 71.52] # 入库 充能站使用
 
 	y_bias = 5
 	x_bias = 40
 	debug = True #True         
 	ONNX_MODEL = '/home/robuster/beetle_ai/scripts/beetle_obj.onnx'
-	IMG_SIZE = 640
+	IMG_SIZE = 128 # 尽量不要动 有未知bug还没解决
 	done = False
 	usb_dev = "/dev/arm" 
 	baudrate = 115200
 
 #需要调试的参数
-	cap_num = 3   #摄像头编号
+	cap_num = 2   #摄像头编号
 
+	ratio       = 0.8 # 画面中坐标换算为实际前进坐标的值
+	ratio_color = -0.8 # 颜色夹取中画面中坐标换算为实际前进坐标的值
+
+	dist_bias = 1.2 # 前近距离与预估值的比例 设定为100cm其大约前进92cm 可细调
+
+	bias_right_high_x = 0 	# 向右边夹取时 夹取前后的左右变化 左+右-
+	bias_right_high_y = -70 # 向右边夹取时 夹取前后的前后变化 前-后+
+	bias_right_high_z = 35 	# 向右边夹取时 夹取前后的高度变化 高+低-
+
+	bias_right_low_x = 0 	# 向右边夹取时 夹取前后的左右变化 左+右-
+	bias_right_low_y = -73  # 向右边夹取时 夹取前后的前后变化 前-后+
+	bias_right_low_z = 25 	# 向右边夹取时 夹取前后的高度变化 高+低-
+
+	bias_left_high_x = 0 	# 向左边夹取时 夹取前后的左右变化 左+右-
+	bias_left_high_y = 50   # 向左边夹取时 夹取前后的前后变化 前+后-
+	bias_left_high_z = 30 	# 向左边夹取时 夹取前后的高度变化 高+低-
+
+	bias_left_low_x = 0 	# 向左边夹取时 夹取前后的左右变化 左+右-
+	bias_left_low_y = 50   	# 向左边夹取时 夹取前后的前后变化 前+后-
+	bias_left_low_z = 30 	# 向左边夹取时 夹取前后的高度变化 高+低-
+
+	bias_under_x = 0 		# 向下夹取时 夹取前后的左右变化 左-右+
+	bias_under_y = 20    	# 向下夹取时 夹取前后的前后变化 前+后- 为了弥补摄像头和夹爪的位置差
+	bias_under_z = -110 	# 向下夹取时 夹取前后的高度变化 高+低-
+
+	# 以下为旧代码参数 待整理
 	put_down_direction = "left"#放置方向，位于车左还是右
 	grab_low_right    =	287     #低左   的机械臂高度      加+高   减-低  以5为单位调节   
 	grab_low_left     = 277     #低右   的机械臂高度      同上
@@ -49,18 +92,12 @@ class GrabParams(object):
 	pitch_high_right   = 7      #高右   的机械臂高度  
 	pitch_high_left    = 7		#高左   的机械臂高度  
 
-	pitch_right_high   = 0 		# 向右时举高机械臂的高度
-	pitch_right_low    = 0 		# 向右时放低机械臂的高度
-
 	pitch_down		   = 0 		# 向下
 #夹取机械臂横滚角调节
 	roll_low_right    = -5      #低左   的机械臂高度      加+向右   减-向左  以2左右为单位调节   
 	roll_low_left     = 0       #低右   的机械臂高度      同上
 	roll_high_right   = -5      #高右   的机械臂高度  
 	roll_high_left    = 5		#高左   的机械臂高度 
-
-	roll_right_high   = 0 		# 向右时机械臂的高度
-	roll_right_low    = 0 		# 向右时机械臂的高度
 
 	roll_down	      = 0 		# 向下
 
@@ -73,20 +110,21 @@ class GrabParams(object):
 
 #物块放置测距误差，基本不用动
 	set_diff = 0
+
 #判断识别物是否是目标，  对应数字，改detect_target
-	classes = ("bird", "clock", "cat","banana ","apple ")
+	classes = ("apple", "clock", "banana","cat ","bird ")
 	#             0       1       2      3        4
-	detect_target = 1
+	detect_target = 0
 
 # 目标颜色修改
-	colors = ['red', 'green', 'bule', 'yellow']
+	colors = ['red', 'green', 'blue', 'yellow', 'purple']
 	#           0       1       2        3
-	color = colors[0]
+	color = 2
 
 # 字符识别修改
 	characters = ['油', '粮']
 	#              0     1
-	character = characters[0]
+	character = 1
 
 grabParams = GrabParams()
 

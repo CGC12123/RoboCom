@@ -57,38 +57,72 @@ void LogTeleop::LogCallback(const sensor_msgs::Joy::ConstPtr& Joy)
 
 	if(Joy->buttons[ton])//button RB
 	{
+		else if(Joy->buttons[1])//button A
+		{
+			system("killall -9  python");
+			if(Joy->buttons[4])//button LB
+			{
+				system("python /home/robuster/RoboCom/beetle_ai/scripts/under.py");
+				printf("under");
+			}
+			else
+			{
+				system("python /home/robuster/RoboCom/beetle_ai/scripts/grab_under.py");
+				printf("grab_under");
+			}			  
+			ros::Duration(1).sleep();
+		}
+
+		else if(Joy->buttons[2])//button B?
+		{
+			system("killall -9  python");
+			if(Joy->buttons[4])//button LB
+			{
+				system("python /home/robuster/RoboCom/beetle_ai/scripts/right.py");
+				printf("right");
+			}
+			else
+			{
+				system("python /home/robuster/RoboCom/beetle_ai/scripts/grab_right.py");
+				printf("grab_right");
+			}			  
+			ros::Duration(1).sleep();
+		}
+		
 		if(Joy->buttons[3])//button Y
 		{
 			system("killall -9 python");
 			if(Joy->buttons[4])//button LB
 			{
 				// 调整姿态
-				system("python /home/robuster/beetle_ai/scripts/high.py");
+				system("python /home/robuster/RoboCom/beetle_ai/scripts/high.py");
 				printf("high");
 			}
 			else
 			{
 				// 动作
-				system("python /home/robuster/beetle_ai/scripts/grab_high.py");
+				system("python /home/robuster/RoboCom/beetle_ai/scripts/grab_high.py");
 				printf("grab_high");
 			}			 
 			ros::Duration(1).sleep();
 		}
-		else if(Joy->buttons[1])//button A
+
+		else if(Joy->buttons[4])//button X?
 		{
 			system("killall -9  python");
 			if(Joy->buttons[4])//button LB
 			{
-				system("python /home/robuster/beetle_ai/scripts/low.py");
-				printf("low");
+				system("python /home/robuster/RoboCom/beetle_ai/scripts/left.py");
+				printf("left");
 			}
 			else
 			{
-				system("python /home/robuster/beetle_ai/scripts/grab_low.py");
-				printf("grab_low");
+				system("python /home/robuster/RoboCom/beetle_ai/scripts/grab_left.py");
+				printf("grab_left");
 			}			  
 			ros::Duration(1).sleep();
 		}
+
 		else if(Joy->buttons[0])
 		{
 			system("killall -9  python");
@@ -98,21 +132,21 @@ void LogTeleop::LogCallback(const sensor_msgs::Joy::ConstPtr& Joy)
 		else if(Joy->buttons[2])
 		{
 			system("killall -9  python");
-			system("python /home/robuster/beetle_ai/scripts/down.py");
+			system("python /home/robuster/RoboCom/beetle_ai/scripts/down.py");
 			printf("down"); 
 			ros::Duration(1).sleep();
 		}
 		else if(Joy->buttons[8])//button Back
 		{
 			system("killall -9  python");
-			system("python /home/robuster/beetle_ai/scripts/home.py");
+			system("python /home/robuster/RoboCom/beetle_ai/scripts/home.py");
 			printf("home"); 
 			ros::Duration(1).sleep();
 		}
 		else if(Joy->buttons[9])//button Start
 		{
 			system("killall -9  python");
-			system("python /home/robuster/beetle_ai/scripts/zero.py");
+			system("python /home/robuster/RoboCom/beetle_ai/scripts/zero.py");
 			printf("zero"); 
 			ros::Duration(1).sleep();
 		}
