@@ -267,41 +267,43 @@ def main():
     # detect.run()
     cap = FastVideoCapture(grabParams.cap_num)
     time.sleep(0.5) 
-    # for i in range(0, 5):
-    frame = cap.read()
-    frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
-    frame = detect.transform_frame(frame)
-    detect_result = detect.obj_detect(frame)
-    if detect_result is None:  
-        pass         
-    else:   
-        x, y = detect_result
-        print(x, y)
-        real_x, real_y = detect.get_position(x, y)
-        # print("move")
-        detect.move_high(real_x, real_y, 0)
-        # detect.going(20) # 往前到下一个抓取位置
+    for i in range(0, 5):
+        frame = cap.read()
+        frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
+        frame = detect.transform_frame(frame)
+        detect_result = detect.obj_detect(frame)
+        if detect_result is None:  
+            pass         
+        else:   
+            x, y = detect_result
+            print(x, y)
+            real_x, real_y = detect.get_position(x, y)
+            # print("move")
+            detect.move_high(real_x, real_y, 0)
+            # detect.going(20) # 往前到下一个抓取位置
 
-    os.system("python /home/robuster/RoboCom/beetle_ai/scripts/right_low.py --debug")
-    detect = Detect_marker()
-    # detect.run()
-    # cap = FastVideoCapture(grabParams.cap_num)
-    # time.sleep(0.5) 
-    time.sleep(1) # 等待到达位置
-    frame = cap.read()
-    frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
-    frame = detect.transform_frame(frame)
-    detect_result = detect.obj_detect(frame)
-    if detect_result is None:  
-        pass         
-    else:   
-        x, y = detect_result
-        print(x, y)
-        real_x, real_y = detect.get_position(x, y)
-        # print("move")
-        detect.move_low(real_x, real_y, 0)
-    os.system("python beetle_ai/scripts/right.py --debug") # 回到初始状态 
-        # detect.going(20) # 往前到下一个抓取位置
+        os.system("python /home/robuster/RoboCom/beetle_ai/scripts/right_low.py --debug")
+        detect = Detect_marker()
+        # detect.run()
+        # cap = FastVideoCapture(grabParams.cap_num)
+        # time.sleep(0.5) 
+        time.sleep(1) # 等待到达位置
+        frame = cap.read()
+        frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
+        frame = detect.transform_frame(frame)
+        detect_result = detect.obj_detect(frame)
+        if detect_result is None:  
+            pass         
+        else:   
+            x, y = detect_result
+            print(x, y)
+            real_x, real_y = detect.get_position(x, y)
+            # print("move")
+            detect.move_low(real_x, real_y, 0)
+        os.system("python /home/robuster/RoboCom/beetle_ai/scripts/right.py --debug") # 回到初始状态 
+
+        if i is not 4:
+            detect.going(10) # 往前到下一个抓取位置
 
 def going_test():
     detect = Detect_marker()
