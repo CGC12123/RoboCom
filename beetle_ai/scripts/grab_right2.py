@@ -263,6 +263,7 @@ class Detect_marker(object):
             cv2.waitKey(500) 
         
 def main():
+    os.system("python /home/robuster/RoboCom/beetle_ai/scripts/right.py --debug") # 回到初始状态 
     detect = Detect_marker()
     # detect.run()
     cap = FastVideoCapture(grabParams.cap_num)
@@ -304,6 +305,8 @@ def main():
 
         if i is not 4:
             detect.going(10) # 往前到下一个抓取位置
+        # else:
+        #     os.system("python /home/robuster/RoboCom/navigation/BackNavigation.py")
 
 def going_test():
     detect = Detect_marker()
