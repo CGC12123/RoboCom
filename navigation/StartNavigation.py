@@ -21,6 +21,8 @@ sh2 = "bash -c '{}'".format("; ".join(sh2s))
 subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', sh2, '--hold'], 
                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
+# time.sleep() # 考虑加个延时确保他导航到目标点
+
 # 运行下一步自动夹取
 sh3s = ["echo 123456 | sudo -S chmod +x /home/robuster/RoboCom/navigation/bash/Grab.sh",
         "/home/robuster/RoboCom/navigation/bash/Grab.sh"]
