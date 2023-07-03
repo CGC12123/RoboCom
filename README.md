@@ -18,7 +18,7 @@ rosservice call /finish_trajectory 0
 # 储存地图
 rosservice call /write_state "{filename: '${HOME}/Downloads/mymap.pbstream'}"
 # 转换地图格式
-rosrun cartographer_ros cartographer_pbstream_to_ros_map -map_filestem={HOME}/Downloads/mymap -pbstream_filename={HOME}/Downloads/mymap.pbstream -resolution=0.05
+rosrun cartographer_ros cartographer_pbstream_to_ros_map -map_filestem={HOME}/Downloads/mymap -pbstream_filename=/home/robuster/Downloads/mymap.pbstream -resolution=0.05
 
 # 启动导航软件
 roslaunch robuster_mr_navigation navigation.launch
