@@ -305,6 +305,8 @@ def main():
 
         if i is not 4:
             detect.going(10) # 往前到下一个抓取位置
+        # else:
+        #     os.system("python /home/robuster/RoboCom/navigation/BackNavigation.py")
 
 def going_test():
     detect = Detect_marker()
