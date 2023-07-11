@@ -6,7 +6,7 @@ import basic
 from GrabParams import grabParams
 
 if os.path.exists("/home/robuster/RoboCom/beetle_ai/scripts/direction.txt"):
-    f = open("/home/robuster/beetle_ai/scripts/direction.txt", "r")
+    f = open("/home/robuster/RoboCom/beetle_ai/scripts/direction.txt", "r")
     direction = int(f.read())
     f.close()
 else:

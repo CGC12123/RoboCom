@@ -57,7 +57,7 @@ void LogTeleop::LogCallback(const sensor_msgs::Joy::ConstPtr& Joy)
 
 	if(Joy->buttons[ton])//button RB
 	{
-		else if(Joy->buttons[1])//button A
+		if(Joy->buttons[1])//button A
 		{
 			system("killall -9  python");
 			if(Joy->buttons[4])//button LB

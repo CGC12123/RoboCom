@@ -205,7 +205,7 @@ class Detect_marker(object):
 
     def run(self):
         self.mc.set_color(0,0,255) #成功调用程序，亮蓝灯
-        f = open("/home/robuster/beetle_ai/scripts/direction.txt", "r+")
+        f = open("/home/robuster/RoboCom/beetle_ai/scripts/direction.txt", "r+")
         self.direction = int(f.read())
         f.seek(0)
         f.truncate()

@@ -58,11 +58,11 @@ class GrabParams(object):
 
 	bias_right_high_x = 0 	# 向右边夹取时 夹取前后的左右变化 左+右-
 	bias_right_high_y = -70 # 向右边夹取时 夹取前后的前后变化 前-后+
-	bias_right_high_z = 35 	# 向右边夹取时 夹取前后的高度变化 高+低-
+	bias_right_high_z = 45 	# 向右边夹取时 夹取前后的高度变化 高+低-
 
 	bias_right_low_x = 0 	# 向右边夹取时 夹取前后的左右变化 左+右-
 	bias_right_low_y = -73  # 向右边夹取时 夹取前后的前后变化 前-后+
-	bias_right_low_z = 25 	# 向右边夹取时 夹取前后的高度变化 高+低-
+	bias_right_low_z = 20 	# 向右边夹取时 夹取前后的高度变化 高+低-
 
 	bias_left_high_x = 0 	# 向左边夹取时 夹取前后的左右变化 左+右-
 	bias_left_high_y = 50   # 向左边夹取时 夹取前后的前后变化 前+后-
@@ -87,7 +87,7 @@ class GrabParams(object):
 # 目标颜色修改
 	colors = ['red', 'green', 'blue', 'yellow', 'purple']
 	#           0       1       2        3
-	color = 2
+	color = 1
 
 # 字符识别修改
 	characters = ['油', '粮']

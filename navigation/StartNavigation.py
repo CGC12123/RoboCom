@@ -12,7 +12,7 @@ sh1 = "bash -c '{}'".format("; ".join(sh1s))
 subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', sh1, '--hold'], 
                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-time.sleep(10) # 等待导航程序启动完成
+time.sleep(15) # 等待导航程序启动完成
 
 # 发布目标地点话题
 sh2s = ["echo 123456 | sudo -S chmod +x /home/robuster/RoboCom/navigation/bash/Start2.sh",
