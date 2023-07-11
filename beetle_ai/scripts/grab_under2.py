@@ -37,8 +37,14 @@ class Detect_marker(object):
         self.clazz = []
         self.direction = 0 
         self.aruco_count = 0
-        self.color_dist = { 'blue': {'lower':np.array([84, 109, 204]), 'high':np.array([106,255,255])},
-                            'red': {'lower':np.array([147, 80, 220]), 'high':np.array([179,255,255])},
+        # self.color_dist = { 'blue': {'lower':np.array([84, 109, 204]), 'high':np.array([106,255,255])},
+        #                     'red': {'lower':np.array([147, 80, 220]), 'high':np.array([179,255,255])},
+        #                     'yellow': {'lower':np.array([15, 141, 204]), 'high':np.array([44,255,255])},
+        #                     'green': {'lower':np.array([59, 82, 78]), 'high':np.array([87,150,255])},
+        #                     'purple': {'lower':np.array([0, 91, 127]), 'high':np.array([179,255,255])},
+        #                 }
+        self.color_dist = { 'blue': {'lower':np.array([93, 145, 122]), 'high':np.array([133,255,255])},
+                            'red': {'lower':np.array([117, 74, 169]), 'high':np.array([179,255,255])},
                             'yellow': {'lower':np.array([15, 141, 204]), 'high':np.array([44,255,255])},
                             'green': {'lower':np.array([59, 82, 78]), 'high':np.array([87,150,255])},
                             'purple': {'lower':np.array([0, 91, 127]), 'high':np.array([179,255,255])},
@@ -100,6 +106,7 @@ class Detect_marker(object):
         return frame
 
     def obj_detect(self, img, color):
+        cv2.imwrite("img.jpg", img)
         low = self.color_dist[color]['lower'] # 阈值设置
         high = self.color_dist[color]['high']
         image_gaussian = cv2.GaussianBlur(img, (5, 5), 0)     # 高斯滤波
