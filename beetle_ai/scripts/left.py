@@ -5,12 +5,12 @@ import os
 import basic
 from GrabParams import grabParams
 
-if os.path.exists("/home/robuster/beetle_ai/scripts/direction.txt"):
+if os.path.exists("/home/robuster/RoboCom/beetle_ai/scripts/direction.txt"):
     f = open("/home/robuster/beetle_ai/scripts/direction.txt", "r")
     direction = int(f.read())
     f.close()
 else:
-    f = open("/home/robuster/beetle_ai/scripts/direction.txt", "w")
+    f = open("/home/robuster/RoboCom/beetle_ai/scripts/direction.txt", "w")
     f.write('0')
     direction = 0
     f.close()
@@ -20,12 +20,12 @@ mc.set_color(0,255,255)#运行，亮蓝灯
 
 if direction:  
     mc.send_coords(grabParams.coords_left_high, 70, 0)
-    f = open("/home/robuster/beetle_ai/scripts/direction.txt", "w")
+    f = open("/home/robuster/RoboCom/beetle_ai/scripts/direction.txt", "w")
     f.write('0')
     f.close()
 else:
     mc.send_coords(grabParams.coords_left_low, 70, 0)
-    f = open("/home/robuster/beetle_ai/scripts/direction.txt", "w")
+    f = open("/home/robuster/RoboCom/beetle_ai/scripts/direction.txt", "w")
     f.write('1')
     f.close()
 
