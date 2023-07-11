@@ -227,6 +227,7 @@ def main():
     #     real_x, real_y = detect.get_position(x, y)
     #     detect.move_high(real_x, real_y, 0)
     #     # detect.going(10) # 往前到下一个抓取位置
+    detect.mc.set_color(255,0,0) #抓取开始，亮红灯
     real_x = 0
     real_y = 0
     detect.move_low(real_x, real_y, 0)

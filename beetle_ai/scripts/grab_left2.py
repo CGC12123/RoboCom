@@ -212,6 +212,7 @@ class Detect_marker(object):
         
 def main():
     detect = Detect_marker()
+    detect.mc.set_color(255,0,0) #抓取开始，亮红灯
     real_x = 0
     real_y = 0
     detect.move_high(real_x, real_y, 0)

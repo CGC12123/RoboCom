@@ -280,6 +280,8 @@ def main():
             print(x, y)
             real_x, real_y = detect.get_position(x, y)
             # print("move")
+            detect.mc.set_color(255,0,0) #抓取开始，亮红灯
+
             detect.move_high(real_x, real_y, 0)
             # detect.going(20) # 往前到下一个抓取位置
 
