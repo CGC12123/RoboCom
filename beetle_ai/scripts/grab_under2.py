@@ -109,6 +109,7 @@ class Detect_marker(object):
         mask = cv2.erode(imgHSV, kernel, iterations=2)
         mask = cv2.dilate(mask, kernel, iterations=1)
         mask = cv2.inRange(mask, low, high)
+        cv2.imwrite("mask.jpg", mask)
         cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2] # 检测外轮廓
         print(1)
         try:
@@ -232,12 +233,13 @@ def main():
     frame = detect.transform_frame(frame)
     detect_result = detect.obj_detect(frame, color = grabParams.colors[grabParams.color])
     if detect_result is None:  
-        cap = FastVideoCapture(grabParams.cap_num)
-        time.sleep(0.5)
-        frame = cap.read()
-        frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
-        frame = detect.transform_frame(frame)
-        detect_result = detect.obj_detect(frame, color = grabParams.colors[grabParams.color])         
+        # cap = FastVideoCapture(grabParams.cap_num)
+        # time.sleep(0.5)
+        # frame = cap.read()
+        # frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
+        # frame = detect.transform_frame(frame)
+        # detect_result = detect.obj_detect(frame, color = grabParams.colors[grabParams.color])         
+        pass
     else:   
         x, y = detect_result
         print(x, y)

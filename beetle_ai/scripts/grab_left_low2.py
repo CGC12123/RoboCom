@@ -230,8 +230,14 @@ def main():
     detect.mc.set_color(255,0,0) #抓取开始，亮红灯
     real_x = 0
     real_y = 0
+    f = open("/home/robuster/RoboCom/beetle_ai/scripts/direction.txt", "w")
+    f.write('0')
+    f.close()
     detect.move_low(real_x, real_y, 0)
-    os.system("python /home/robuster/RoboCom/beetle_ai/scripts/left_low.py")
+    f = open("/home/robuster/RoboCom/beetle_ai/scripts/direction.txt", "w")
+    f.write('0')
+    f.close()
+    os.system("python /home/robuster/RoboCom/beetle_ai/scripts/left.py")
             
 if __name__ == "__main__":
     main()

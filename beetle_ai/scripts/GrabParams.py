@@ -49,7 +49,8 @@ class GrabParams(object):
 
 
 #需要调试的参数
-	cap_num = 2   #摄像头编号
+	cap_num = 2   # 摄像头编号
+	cap_num2 = 3   # 摄像头编号2 备用 有时1会死掉
 
 	ratio       = 0.8 	# 画面中坐标换算为实际前进坐标的值
 	ratio_color = -0.8 	# 颜色夹取中画面中坐标换算为实际前进坐标的值
@@ -65,12 +66,12 @@ class GrabParams(object):
 	bias_right_low_z = 20 	# 向右边夹取时 夹取前后的高度变化 高+低-
 
 	bias_left_high_x = 0 	# 向左边夹取时 夹取前后的左右变化 左+右-
-	bias_left_high_y = 50   # 向左边夹取时 夹取前后的前后变化 前+后-
-	bias_left_high_z = 30 	# 向左边夹取时 夹取前后的高度变化 高+低-
+	bias_left_high_y = 60   # 向左边夹取时 夹取前后的前后变化 前+后-
+	bias_left_high_z = 35 	# 向左边夹取时 夹取前后的高度变化 高+低-
 
 	bias_left_low_x = 0 	# 向左边夹取时 夹取前后的左右变化 左+右-
-	bias_left_low_y = 50   	# 向左边夹取时 夹取前后的前后变化 前+后-
-	bias_left_low_z = 30 	# 向左边夹取时 夹取前后的高度变化 高+低-
+	bias_left_low_y = 70   	# 向左边夹取时 夹取前后的前后变化 前+后-
+	bias_left_low_z = 35 	# 向左边夹取时 夹取前后的高度变化 高+低-
 
 	bias_under_x = 0 		# 向下夹取时 夹取前后的左右变化 左-右+
 	bias_under_y = 20    	# 向下夹取时 夹取前后的前后变化 前+后- 为了弥补摄像头和夹爪的位置差
@@ -87,7 +88,7 @@ class GrabParams(object):
 # 目标颜色修改
 	colors = ['red', 'green', 'blue', 'yellow', 'purple']
 	#           0       1       2        3
-	color = 1
+	color = 2
 
 # 字符识别修改
 	characters = ['油', '粮']

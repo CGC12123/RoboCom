@@ -216,6 +216,9 @@ def main():
     real_x = 0
     real_y = 0
     detect.move_high(real_x, real_y, 0)
+    f = open("/home/robuster/RoboCom/beetle_ai/scripts/direction.txt", "w")
+    f.write('1')
+    f.close()
     os.system("python /home/robuster/RoboCom/beetle_ai/scripts/left.py --debug")
             
 if __name__ == "__main__":
