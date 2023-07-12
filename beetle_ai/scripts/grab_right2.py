@@ -174,6 +174,44 @@ class Detect_marker(object):
         else:
             return None
         
+    def check_position(self, img):
+        x = y = 0
+        img_ori = img
+        img_ori = self.transform_frame(img)
+        img = self.transform_frame_128(img)
+
+        rightmost_box = None
+        rightmost_x = 0
+        net = cv2.dnn.readNetFromONNX(grabParams.ONNX_MODEL)
+        blob = cv2.dnn.blobFromImage(img, 1 / 255.0, (grabParams.IMG_SIZE, grabParams.IMG_SIZE), [0, 0, 0], swapRB=True, crop=False)
+        net.setInput(blob)
+        outputs = net.forward(net.getUnconnectedOutLayersNames())[0]
+        boxes, classes, scores = self.yolo.yolov5_post_process_simple(outputs)
+
+        if boxes is not None:
+            for i in range(len(classes)):
+                # if classes[i] == grabParams.detect_target:
+                box = boxes[i]
+                x = int((box[0] + box[2]) / 2)
+                if x > rightmost_x:
+                    rightmost_box = box
+                    rightmost_x = x
+
+            if rightmost_box is not None:
+                left, top, right, bottom = rightmost_box
+                x = int((left + right) / 2)
+                y = int((top + bottom) / 2)
+                w = bottom - top
+                h = right - left
+                cv2.rectangle(img, (int(left), int(top)), (int(right), int(bottom)), (0, 0, 255), 2)
+                cv2.imwrite('../img/obj/target.jpg', img, [cv2.IMWRITE_JPEG_QUALITY, 90])
+
+            else:
+                done = True
+                self.mc.set_color(255, 192, 203)  # 识别不到，亮粉灯
+                return None
+
+        return x, y
 
     def distance(self, w):
         dist = self.hr / w * self.lv
@@ -222,17 +260,30 @@ class Detect_marker(object):
         count = 0
         move_cmd = Twist()
         time.sleep(0.5)
-        while True:
-            move_cmd.linear.x = 0.1
-            move_cmd.angular.z = 0
-            if go_count - count < 2:
-                move_cmd.linear.x = 0.05
+        if go_count >= 0:
+            while True:
+                move_cmd.linear.x = 0.1
                 move_cmd.angular.z = 0
-            self.pub.publish(move_cmd)
-            count += 1
-            if count >= go_count:
-                break
-            self.rate.sleep()
+                if go_count - count < 2:
+                    move_cmd.linear.x = 0.05
+                    move_cmd.angular.z = 0
+                self.pub.publish(move_cmd)
+                count += 1
+                if count >= go_count:
+                    break
+                self.rate.sleep()
+        else:
+            while True:
+                move_cmd.linear.x = -0.1
+                move_cmd.angular.z = 0
+                if go_count - count < 2:
+                    move_cmd.linear.x = 0.05
+                    move_cmd.angular.z = 0
+                self.pub.publish(move_cmd)
+                count += 1
+                if count >= go_count:
+                    break
+                self.rate.sleep()
         # 当循环结束时，手动停止机器人运动
         move_cmd.linear.x = 0
         move_cmd.angular.z = 0
@@ -268,6 +319,19 @@ def main():
     # detect.run()
     cap = FastVideoCapture(grabParams.cap_num)
     time.sleep(0.5) 
+    # 调整位置
+    x = 0
+    y = 0
+    frame = cap.read()
+    result = detect.check_position(frame)
+    while result is None:
+        detect.going(2) # 往前走一段继续识别
+        frame = cap.read()
+        result = detect.check_position(frame)
+    
+    detect.going(detect.c_x - result[0]) # 尽量对准第一个
+
+    # 开始夹取
     for i in range(0, 5):
         frame = cap.read()
         frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
