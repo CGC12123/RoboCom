@@ -58,10 +58,16 @@ class Detect_marker(object):
         self.mc.send_coords(coords_target_2, 70, 0)
         time.sleep(0.2)
         '''
-        # 移动到目标位置
-        coords_target_3 = [coords_ori[0] + grabParams.bias_left_high_x + x,  coords_ori[1] + grabParams.bias_left_high_y,  
+        # 先抬高
+        coords_target_3 = [coords_ori[0] + grabParams.bias_left_high_x + x,  coords_ori[1] - 20,  
                            coords_ori[2] + grabParams.bias_left_high_z, coords_ori[3], coords_ori[4], coords_ori[5]]
         self.mc.send_coords(coords_target_3, 70, 0)
+        time.sleep(0.6)
+        
+        # 移动到目标位置
+        coords_target_4 = [coords_ori[0] + grabParams.bias_left_high_x + x,  coords_ori[1] + grabParams.bias_left_high_y,  
+                           coords_ori[2] + grabParams.bias_left_high_z, coords_ori[3], coords_ori[4], coords_ori[5]]
+        self.mc.send_coords(coords_target_4, 70, 0)
         time.sleep(0.6)
         basic.grap(True)
         time.sleep(1)
