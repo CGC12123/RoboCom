@@ -123,7 +123,7 @@ void LogTeleop::LogCallback(const sensor_msgs::Joy::ConstPtr& Joy)
 			ros::Duration(1).sleep();
 		}
 
-		else if(Joy->buttons[3])
+		else if(Joy->buttons[3])//button Y
 		{
 			system("killall -9  python");
 			printf("kill"); 

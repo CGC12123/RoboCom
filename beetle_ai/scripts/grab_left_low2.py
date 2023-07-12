@@ -66,9 +66,9 @@ class Detect_marker(object):
         time.sleep(1)
 
         # 放回
-        coords_target_4 = [coords_ori[0] + grabParams.bias_left_low_x + x,  coords_ori[1] + grabParams.bias_left_low_y - 55,  
+        coords_target_4 = [coords_ori[0] + grabParams.bias_left_low_x + x,  coords_ori[1] + grabParams.bias_left_low_y - 70,  
                            coords_ori[2] + grabParams.bias_left_low_z + 35, coords_ori[3], coords_ori[4], coords_ori[5]]
-        self.mc.send_coords(coords_target_4, 70, 0) # 先抬高
+        self.mc.send_coords(coords_target_4, 70, 0) # 先抬高撤回
         time.sleep(0.5)
         # coords_target_4 = [coords_ori[0] + grabParams.bias_left_low_x + x,  coords_ori[1] + grabParams.bias_left_low_y - 40,  
         #                    coords_ori[2] + grabParams.bias_left_low_z + 30, coords_ori[3], coords_ori[4], coords_ori[5]]
