@@ -68,8 +68,12 @@ if __name__ == '__main__':
 			if ((math.fabs(pose_x - trans[0]) < bias_navi) and (math.fabs(pose_y - trans[1]) < bias_navi) and (math.fabs(pose_z - trans[2]) < bias_navi)
 					and (math.fabs(orien_x - rot[0]) < bias_navi) and (math.fabs(orien_y - rot[1]) < bias_navi) 
 					and (math.fabs(orien_z - rot[2]) < bias_navi) and (math.fabs(orien_w - rot[3]) < bias_navi)):
-				autoGrab() # 判定到达位置后开始夹取
+				print("arrive") # 到达位置
+				break
 		except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
 			continue
 
 		rate.sleep()
+
+	# autoGrab() # 判定到达位置后开始夹取
+	
