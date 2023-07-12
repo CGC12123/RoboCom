@@ -320,6 +320,7 @@ def main():
     # detect.run()
     cap = FastVideoCapture(grabParams.cap_num)
     time.sleep(0.5) 
+    
     # # 调整位置
     # x = 0
     # y = 0
@@ -339,7 +340,7 @@ def main():
         frame = detect.transform_frame(frame)
         detect_result = detect.obj_detect(frame)
         if detect_result is None:  
-            # 往回收一下 防止撞到
+            # 往回收一下 防止撞到 考虑去掉?
             coords_ori = grabParams.coords_right_high
             coords_target_3 = [coords_ori[0],  coords_ori[1] - 10, coords_ori[2], coords_ori[3], coords_ori[4], coords_ori[5]]
             detect.mc.send_coords(coords_target_3, 70, 0)
