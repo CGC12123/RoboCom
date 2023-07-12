@@ -62,9 +62,9 @@ class Detect_marker(object):
 		time.sleep(0.5)
 		# 移动到目标位置并夹取
 		# 分两步
-		coords_target_3 = [coords_ori[0] + x,  coords_ori[1] + grabParams.bias_under_y + y,  
-						   coords_ori[2], coords_ori[3], coords_ori[4], coords_ori[5]]
-		self.mc.send_coords(coords_target_3, 50, 0)
+		# coords_target_3 = [coords_ori[0] + x,  coords_ori[1] + grabParams.bias_under_y + y,  
+		# 				   coords_ori[2], coords_ori[3], coords_ori[4], coords_ori[5]]
+		# self.mc.send_coords(coords_target_3, 50, 0)
 
 		coords_target_4 = [coords_ori[0] + grabParams.bias_under_x + x,  coords_ori[1] + grabParams.bias_under_y + y,  
 						   coords_ori[2] + grabParams.bias_under_z, coords_ori[3], coords_ori[4], coords_ori[5]]
@@ -136,9 +136,13 @@ class Detect_marker(object):
 			mid_point_y = round(mid_point_y, 2)
 
 			# distance = (((mid_point_x - 320) ** 2) + ((mid_point_y - 240) ** 2))**0.5 # 去年的代码 现在不知道干什么用的了
+			cv2.imshow("img", img)
+			cv2.waitKey(1)
 
 			return mid_point_x, mid_point_y
 		except :
+			cv2.imshow("img", img)
+			cv2.waitKey(1)
 			return None
 		
 
@@ -232,23 +236,31 @@ class Detect_marker(object):
 def main():
 	detect = Detect_marker()
 	# detect.run()
+	'''
 	cap = cv2.VideoCapture(grabParams.cap_num)
 	time.sleep(0.5) 
 	_, frame = cap.read()
 	frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
-	frame = cv2.resize(frame, (grabParams.IMG_SIZE, grabParams.IMG_SIZE))
+	# frame = cv2.resize(frame, (grabParams.IMG_SIZE, grabParams.IMG_SIZE))
 	detect_result = detect.obj_detect(frame, color = grabParams.colors[grabParams.color])
-	if detect_result is None:  
-		detect.mc.set_color(200,200,0) #抓取开始，亮黄灯
-				 
-	else:   
-		x, y = detect_result
-		print(x, y)
-		real_x, real_y = detect.get_position(x, y)
-		# print("move")
-		detect.mc.set_color(255,0,0) #抓取开始，亮红灯
+	while detect_result is None:  
+		detect.mc.set_color(200,200,0) # 无法识别，亮黄灯
+		# print(1)
+		detect_result = detect.obj_detect(frame, color = grabParams.colors[grabParams.color])
+	detect.mc.set_color(0,255,0) # 识别，亮绿灯
 
-		detect.move(real_x, real_y, 0)
+
+	print(detect_result)
+	# else:   
+	x, y = detect_result
+	'''
+	x = y = 0
+	real_x, real_y = detect.get_position(x, y)
+	# print("move")
+	time.sleep(0.5)
+	detect.mc.set_color(255,0,0) #抓取开始，亮红灯
+	real_x = real_y= 0
+	detect.move(real_x, real_y, 0)
 
 def going_test():
 	detect = Detect_marker()
