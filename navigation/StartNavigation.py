@@ -40,8 +40,8 @@ if __name__ == '__main__':
 	StartNavigation()
 
 	# 读取目标位置YAML文件中的数据
-	with open('target_pose.yaml', 'r') as f:
-		yaml_data = yaml.load(f, Loader=yaml.FullLoader)
+	with open('/home/robuster/RoboCom/navigation/target_pose.yaml', 'r') as f:
+		yaml_data = yaml.load(f, Loader=yaml.SafeLoader)
 
 	pose_x = yaml_data['pose']['position']['x']
 	pose_y = yaml_data['pose']['position']['y']
@@ -63,10 +63,8 @@ if __name__ == '__main__':
 	while not rospy.is_shutdown():
 		try:
 			(trans, rot) = listener.lookupTransform('/map', '/base_link', rospy.Time(0))
-			# rospy.loginfo("Translation: x = %f, y = %f, z = %f",
-			# 	trans[0], trans[1], trans[2])
-			# rospy.loginfo("Rotation:    x = %f, y = %f, z = %f, w = %f",
-			# 	rot[0], rot[1], rot[2], rot[3])
+			rospy.loginfo("Translation: x = %f, y = %f, z = %f,   Rotation:    x = %f, y = %f, z = %f, w = %f",
+				trans[0], trans[1], trans[2], rot[0], rot[1], rot[2], rot[3])
 			if ((math.fabs(pose_x - trans[0]) < bias_navi) and (math.fabs(pose_y - trans[1]) < bias_navi) and (math.fabs(pose_z - trans[2]) < bias_navi)
 					and (math.fabs(orien_x - rot[0]) < bias_navi) and (math.fabs(orien_y - rot[1]) < bias_navi) 
 					and (math.fabs(orien_z - rot[2]) < bias_navi) and (math.fabs(orien_w - rot[3]) < bias_navi)):
