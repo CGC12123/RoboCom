@@ -1,3 +1,5 @@
+#encoding: UTF-8
+
 import cv2
 import numpy as np
 from torch import cartesian_prod
@@ -16,7 +18,7 @@ cap.set(4, Height)
 cap.set(10,150)
 
 class Camra():
-    def __init__(self) -> None:
+    def __init__(self):
         # 设置摄像头窗口尺寸
         cv2.namedWindow("HSV")
         cv2.resizeWindow("HSV",640,240)

@@ -37,8 +37,14 @@ class Detect_marker(object):
         self.clazz = []
         self.direction = 0 
         self.aruco_count = 0
-        self.color_dist = { 'blue': {'lower':np.array([84, 109, 204]), 'high':np.array([106,255,255])},
-                            'red': {'lower':np.array([147, 80, 220]), 'high':np.array([179,255,255])},
+        # self.color_dist = { 'blue': {'lower':np.array([84, 109, 204]), 'high':np.array([106,255,255])},
+        #                     'red': {'lower':np.array([147, 80, 220]), 'high':np.array([179,255,255])},
+        #                     'yellow': {'lower':np.array([15, 141, 204]), 'high':np.array([44,255,255])},
+        #                     'green': {'lower':np.array([59, 82, 78]), 'high':np.array([87,150,255])},
+        #                     'purple': {'lower':np.array([0, 91, 127]), 'high':np.array([179,255,255])},
+        #                 }
+        self.color_dist = { 'blue': {'lower':np.array([93, 145, 122]), 'high':np.array([133,255,255])},
+                            'red': {'lower':np.array([117, 74, 169]), 'high':np.array([179,255,255])},
                             'yellow': {'lower':np.array([15, 141, 204]), 'high':np.array([44,255,255])},
                             'green': {'lower':np.array([59, 82, 78]), 'high':np.array([87,150,255])},
                             'purple': {'lower':np.array([0, 91, 127]), 'high':np.array([179,255,255])},
@@ -100,6 +106,7 @@ class Detect_marker(object):
         return frame
 
     def obj_detect(self, img, color):
+        cv2.imwrite("img.jpg", img)
         low = self.color_dist[color]['lower'] # 阈值设置
         high = self.color_dist[color]['high']
         image_gaussian = cv2.GaussianBlur(img, (5, 5), 0)     # 高斯滤波
@@ -109,6 +116,7 @@ class Detect_marker(object):
         mask = cv2.erode(imgHSV, kernel, iterations=2)
         mask = cv2.dilate(mask, kernel, iterations=1)
         mask = cv2.inRange(mask, low, high)
+        cv2.imwrite("mask.jpg", mask)
         cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2] # 检测外轮廓
         print(1)
         try:
@@ -165,7 +173,7 @@ class Detect_marker(object):
 
     def run(self):
         self.mc.set_color(0,0,255) #成功调用程序，亮蓝灯
-        f = open("/home/robuster/beetle_ai/scripts/direction.txt", "r+")
+        f = open("/home/robuster/RoboCom/beetle_ai/scripts/direction.txt", "r+")
         self.direction = int(f.read())
         f.seek(0)
         f.truncate()
@@ -232,17 +240,20 @@ def main():
     frame = detect.transform_frame(frame)
     detect_result = detect.obj_detect(frame, color = grabParams.colors[grabParams.color])
     if detect_result is None:  
-        cap = FastVideoCapture(grabParams.cap_num)
-        time.sleep(0.5)
-        frame = cap.read()
-        frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
-        frame = detect.transform_frame(frame)
-        detect_result = detect.obj_detect(frame, color = grabParams.colors[grabParams.color])         
+        # cap = FastVideoCapture(grabParams.cap_num)
+        # time.sleep(0.5)
+        # frame = cap.read()
+        # frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
+        # frame = detect.transform_frame(frame)
+        # detect_result = detect.obj_detect(frame, color = grabParams.colors[grabParams.color])         
+        pass
     else:   
         x, y = detect_result
         print(x, y)
         real_x, real_y = detect.get_position(x, y)
         # print("move")
+        detect.mc.set_color(255,0,0) #抓取开始，亮红灯
+
         detect.move(real_x, real_y, 0)
 
 def going_test():

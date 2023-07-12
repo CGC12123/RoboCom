@@ -66,9 +66,9 @@ class Detect_marker(object):
         time.sleep(1)
 
         # 放回
-        coords_target_4 = [coords_ori[0] + grabParams.bias_left_low_x + x,  coords_ori[1] + grabParams.bias_left_low_y - 55,  
+        coords_target_4 = [coords_ori[0] + grabParams.bias_left_low_x + x,  coords_ori[1] + grabParams.bias_left_low_y - 70,  
                            coords_ori[2] + grabParams.bias_left_low_z + 35, coords_ori[3], coords_ori[4], coords_ori[5]]
-        self.mc.send_coords(coords_target_4, 70, 0) # 先抬高
+        self.mc.send_coords(coords_target_4, 70, 0) # 先抬高撤回
         time.sleep(0.5)
         # coords_target_4 = [coords_ori[0] + grabParams.bias_left_low_x + x,  coords_ori[1] + grabParams.bias_left_low_y - 40,  
         #                    coords_ori[2] + grabParams.bias_left_low_z + 30, coords_ori[3], coords_ori[4], coords_ori[5]]
@@ -153,7 +153,7 @@ class Detect_marker(object):
 
     def run(self):
         self.mc.set_color(0,0,255) #成功调用程序，亮蓝灯
-        f = open("/home/robuster/beetle_ai/scripts/direction.txt", "r+")
+        f = open("/home/robuster/RoboCom/beetle_ai/scripts/direction.txt", "r+")
         self.direction = int(f.read())
         f.seek(0)
         f.truncate()
@@ -227,10 +227,17 @@ def main():
     #     real_x, real_y = detect.get_position(x, y)
     #     detect.move_high(real_x, real_y, 0)
     #     # detect.going(10) # 往前到下一个抓取位置
+    detect.mc.set_color(255,0,0) #抓取开始，亮红灯
     real_x = 0
     real_y = 0
+    f = open("/home/robuster/RoboCom/beetle_ai/scripts/direction.txt", "w")
+    f.write('0')
+    f.close()
     detect.move_low(real_x, real_y, 0)
-    os.system("python /home/robuster/RoboCom/beetle_ai/scripts/left_low.py")
+    f = open("/home/robuster/RoboCom/beetle_ai/scripts/direction.txt", "w")
+    f.write('0')
+    f.close()
+    os.system("python /home/robuster/RoboCom/beetle_ai/scripts/left.py")
             
 if __name__ == "__main__":
     main()

@@ -5,7 +5,7 @@ import os, time
 
 def home():
     os.system(
-        "python /home/robuster/beetle_ai/scripts/home_2.py"
+        "python /home/robuster/RoboCom/beetle_ai/scripts/home_2.py"
     )
 
 t = threading.Thread(target=home(),name='home')

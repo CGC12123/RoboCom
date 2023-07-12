@@ -153,7 +153,7 @@ class Detect_marker(object):
 
     def run(self):
         self.mc.set_color(0,0,255) #成功调用程序，亮蓝灯
-        f = open("/home/robuster/beetle_ai/scripts/direction.txt", "r+")
+        f = open("/home/robuster/RoboCom/beetle_ai/scripts/direction.txt", "r+")
         self.direction = int(f.read())
         f.seek(0)
         f.truncate()
@@ -212,9 +212,13 @@ class Detect_marker(object):
         
 def main():
     detect = Detect_marker()
+    detect.mc.set_color(255,0,0) #抓取开始，亮红灯
     real_x = 0
     real_y = 0
     detect.move_high(real_x, real_y, 0)
+    f = open("/home/robuster/RoboCom/beetle_ai/scripts/direction.txt", "w")
+    f.write('1')
+    f.close()
     os.system("python /home/robuster/RoboCom/beetle_ai/scripts/left.py --debug")
             
 if __name__ == "__main__":

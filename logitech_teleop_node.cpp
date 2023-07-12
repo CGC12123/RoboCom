@@ -57,7 +57,7 @@ void LogTeleop::LogCallback(const sensor_msgs::Joy::ConstPtr& Joy)
 
 	if(Joy->buttons[ton])//button RB
 	{
-		else if(Joy->buttons[1])//button A
+		if(Joy->buttons[1])//button A
 		{
 			system("killall -9  python");
 			if(Joy->buttons[4])//button LB
@@ -89,25 +89,25 @@ void LogTeleop::LogCallback(const sensor_msgs::Joy::ConstPtr& Joy)
 			ros::Duration(1).sleep();
 		}
 		
-		if(Joy->buttons[3])//button Y
-		{
-			system("killall -9 python");
-			if(Joy->buttons[4])//button LB
-			{
-				// 调整姿态
-				system("python /home/robuster/RoboCom/beetle_ai/scripts/high.py");
-				printf("high");
-			}
-			else
-			{
-				// 动作
-				system("python /home/robuster/RoboCom/beetle_ai/scripts/grab_high.py");
-				printf("grab_high");
-			}			 
-			ros::Duration(1).sleep();
-		}
+		// if(Joy->buttons[3])//button Y
+		// {
+		// 	system("killall -9 python");
+		// 	if(Joy->buttons[4])//button LB
+		// 	{
+		// 		// 调整姿态
+		// 		system("python /home/robuster/RoboCom/beetle_ai/scripts/high.py");
+		// 		printf("high");
+		// 	}
+		// 	else
+		// 	{
+		// 		// 动作
+		// 		system("python /home/robuster/RoboCom/beetle_ai/scripts/grab_high.py");
+		// 		printf("grab_high");
+		// 	}			 
+		// 	ros::Duration(1).sleep();
+		// }
 
-		else if(Joy->buttons[4])//button X?
+		else if(Joy->buttons[0])//button X?
 		{
 			system("killall -9  python");
 			if(Joy->buttons[4])//button LB
@@ -123,7 +123,7 @@ void LogTeleop::LogCallback(const sensor_msgs::Joy::ConstPtr& Joy)
 			ros::Duration(1).sleep();
 		}
 
-		else if(Joy->buttons[0])
+		else if(Joy->buttons[3])//button Y
 		{
 			system("killall -9  python");
 			printf("kill"); 
@@ -208,4 +208,3 @@ int main(int argc,char** argv)
     ros::spin();
     return 0;
 }
-
