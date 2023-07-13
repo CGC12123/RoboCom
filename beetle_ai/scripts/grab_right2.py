@@ -53,12 +53,12 @@ class Detect_marker(object):
         coords_target_2 = [coords_ori[0] + grabParams.bias_right_high_x + x,  coords_ori[1] - 10,  
                            coords_ori[2] + grabParams.bias_right_high_z, coords_ori[3], coords_ori[4], coords_ori[5]]
         self.mc.send_coords(coords_target_2, 70, 0)
-        time.sleep(0.2)
-        # 移动到目标位置
+        time.sleep(0.5) # 等它先到平面上
+        # 移动到目标位置 往前推
         coords_target_3 = [coords_ori[0] + grabParams.bias_right_high_x + x,  coords_ori[1] + grabParams.bias_right_high_y,  
                            coords_ori[2] + grabParams.bias_right_high_z, coords_ori[3], coords_ori[4], coords_ori[5]]
-        self.mc.send_coords(coords_target_3, 70, 0)
-        time.sleep(0.6)
+        self.mc.send_coords(coords_target_3, 50, 0)
+        time.sleep(0.8)
         basic.grap(True)
         time.sleep(1)
 
@@ -84,8 +84,8 @@ class Detect_marker(object):
         time.sleep(0.6)
         coords_target1 = [coords_ori[0] + grabParams.bias_right_low_x + x,  coords_ori[1] + grabParams.bias_right_low_y,  
                          coords_ori[2] + grabParams.bias_right_low_z, coords_ori[3], coords_ori[4], coords_ori[5]]
-        self.mc.send_coords(coords_target1, 70, 0)
-        time.sleep(0.6)
+        self.mc.send_coords(coords_target1, 50, 0)
+        time.sleep(0.8)
         # 夹取
         basic.grap(True)
         time.sleep(0.5)
@@ -158,7 +158,7 @@ class Detect_marker(object):
                 w = bottom - top
                 h = right - left
                 cv2.rectangle(img, (int(left), int(top)), (int(right), int(bottom)), (0, 0, 255), 2)
-                cv2.imwrite('../img/obj/target.jpg', img, [cv2.IMWRITE_JPEG_QUALITY, 90])
+                cv2.imwrite('/home/cgc/Library/_Compete/2023RoboCom/beetle_ai/img/obj/target.jpg', img, [cv2.IMWRITE_JPEG_QUALITY, 90])
             else:
                 done = True
                 self.mc.set_color(255,192,203) #识别不到，亮粉灯
@@ -204,7 +204,7 @@ class Detect_marker(object):
                 w = bottom - top
                 h = right - left
                 cv2.rectangle(img, (int(left), int(top)), (int(right), int(bottom)), (0, 0, 255), 2)
-                cv2.imwrite('../img/obj/target.jpg', img, [cv2.IMWRITE_JPEG_QUALITY, 90])
+                cv2.imwrite('/home/cgc/Library/_Compete/2023RoboCom/beetle_ai/img/obj/target.jpg', img, [cv2.IMWRITE_JPEG_QUALITY, 90])
 
             else:
                 done = True
