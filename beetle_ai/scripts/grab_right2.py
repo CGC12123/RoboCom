@@ -44,28 +44,33 @@ class Detect_marker(object):
         global done
         time.sleep(0.2)
         # 抓取
-        # 对位置并抬高
+        # 防止离太近 先收回来
         coords_ori = grabParams.coords_right_high
-        coords_target = [coords_ori[0] + x,  coords_ori[1] - 10,  coords_ori[2] + 30, coords_ori[3], coords_ori[4], coords_ori[5]]
-        self.mc.send_coords(coords_target, 70, 0)
+        coords_target = [coords_ori[0] + x,  coords_ori[1] + 30,  coords_ori[2], coords_ori[3], coords_ori[4], coords_ori[5]]
+        self.mc.send_coords(coords_target, 50, 0)
         time.sleep(0.5)
+        coords_ori = grabParams.coords_right_high
+        coords_target = [coords_ori[0] + x,  coords_ori[1] + 30,  coords_ori[2] + 60, coords_ori[3], coords_ori[4], coords_ori[5]]
+        self.mc.send_coords(coords_target, 50, 0)
+        time.sleep(0.5)
+
         # 为了防止卡死先对位置 并往回收防止撞到
         coords_target_2 = [coords_ori[0] + grabParams.bias_right_high_x + x,  coords_ori[1] - 10,  
-                           coords_ori[2] + grabParams.bias_right_high_z, coords_ori[3], coords_ori[4], coords_ori[5]]
-        self.mc.send_coords(coords_target_2, 70, 0)
+                            coords_ori[2] + grabParams.bias_right_high_z, coords_ori[3], coords_ori[4], coords_ori[5]]
+        self.mc.send_coords(coords_target_2, 50, 0)
         time.sleep(0.5) # 等它先到平面上
         # 移动到目标位置 往前推
         coords_target_3 = [coords_ori[0] + grabParams.bias_right_high_x + x,  coords_ori[1] + grabParams.bias_right_high_y,  
-                           coords_ori[2] + grabParams.bias_right_high_z, coords_ori[3], coords_ori[4], coords_ori[5]]
-        self.mc.send_coords(coords_target_3, 50, 0)
+                            coords_ori[2] + grabParams.bias_right_high_z, coords_ori[3], coords_ori[4], coords_ori[5]]
+        self.mc.send_coords(coords_target_3, 30, 0)
         time.sleep(0.8)
         basic.grap(True)
         time.sleep(1)
 
         # 放回
-        self.mc.send_coords(grabParams.coords_pitchdown1, 70, 0) # 先抬高
+        self.mc.send_coords(grabParams.coords_pitchdown1, 50, 0) # 先抬高
         time.sleep(0.5)
-        self.mc.send_coords(grabParams.coords_pitchdown2, 70, 0)
+        self.mc.send_coords(grabParams.coords_pitchdown2, 50, 0)
         time.sleep(1)
         basic.grap(False)
         done = True
@@ -79,12 +84,17 @@ class Detect_marker(object):
         # 抓取
         coords_ori = grabParams.coords_right_low
         # 对位置 并往后上方收
-        coords_target = [coords_ori[0] + grabParams.bias_right_low_x + x,  coords_ori[1] + 10, coords_ori[2], coords_ori[3], coords_ori[4], coords_ori[5]]
-        self.mc.send_coords(coords_target, 70, 0)
-        time.sleep(0.6)
+        # 往回收一下 防止撞到
+        coords_ori = grabParams.coords_right_high
+        coords_target = [coords_ori[0] + x,  coords_ori[1] + 20, coords_ori[2], coords_ori[3], coords_ori[4], coords_ori[5]]
+        self.mc.send_coords(coords_target, 50, 0)
+        time.sleep(0.2)
+        # coords_target = [coords_ori[0] + grabParams.bias_right_low_x + x,  coords_ori[1] + 10, coords_ori[2], coords_ori[3], coords_ori[4], coords_ori[5]]
+        # self.mc.send_coords(coords_target, 50, 0)
+        # time.sleep(0.6)
         coords_target1 = [coords_ori[0] + grabParams.bias_right_low_x + x,  coords_ori[1] + grabParams.bias_right_low_y,  
                          coords_ori[2] + grabParams.bias_right_low_z, coords_ori[3], coords_ori[4], coords_ori[5]]
-        self.mc.send_coords(coords_target1, 50, 0)
+        self.mc.send_coords(coords_target1, 30, 0)
         time.sleep(0.8)
         # 夹取
         basic.grap(True)
@@ -92,13 +102,13 @@ class Detect_marker(object):
         # 退出前抬高
         coords_target_2 = [coords_ori[0] + grabParams.bias_right_low_x + x,  coords_ori[1] + grabParams.bias_right_low_y + 35,  
                            coords_ori[2] + grabParams.bias_right_low_z+15, coords_ori[3], coords_ori[4], coords_ori[5]]
-        self.mc.send_coords(coords_target_2, 70, 0)
+        self.mc.send_coords(coords_target_2, 50, 0)
         time.sleep(0.2)
 
         # 放回
-        self.mc.send_coords(grabParams.coords_pitchdown3, 70, 0) # 先抬高
+        self.mc.send_coords(grabParams.coords_pitchdown3, 50, 0) # 先抬高
         time.sleep(0.5)
-        self.mc.send_coords(grabParams.coords_pitchdown4, 70, 0)
+        self.mc.send_coords(grabParams.coords_pitchdown4, 50, 0)
         time.sleep(1)
         basic.grap(False)
         done = True
@@ -334,7 +344,7 @@ def main():
         result = detect.check_position(frame)
         print("None")
 
-    while math.fabs(detect.c_x - result[0]) > 8 and count < 3: # 反复调整
+    while math.fabs(detect.c_x - result[0]) > 6 and count < 5: # 反复调整
         print(detect.c_x - result[0])
         detect.going(0.1 * (detect.c_x - result[0]))
         frame = cap.read()
@@ -368,6 +378,8 @@ def main():
             detect.move_high(real_x, real_y, 0)
             # detect.going(20) # 往前到下一个抓取位置
 
+        os.system("python /home/robuster/RoboCom/beetle_ai/scripts/right.py --debug") # 回到高点防止鬼畜
+        time.sleep(0.7)
         os.system("python /home/robuster/RoboCom/beetle_ai/scripts/right_low.py --debug")
         detect = Detect_marker()
         # detect.run()
@@ -381,7 +393,7 @@ def main():
         if detect_result is None:  
             # 往回收一下 防止撞到
             coords_ori = grabParams.coords_right_low
-            coords_target_3 = [coords_ori[0],  coords_ori[1] - 10, coords_ori[2] + 10, coords_ori[3], coords_ori[4], coords_ori[5]]
+            coords_target_3 = [coords_ori[0],  coords_ori[1] + 10, coords_ori[2] + 10, coords_ori[3], coords_ori[4], coords_ori[5]]
             detect.mc.send_coords(coords_target_3, 70, 0)
             time.sleep(0.5)          
         else:   
