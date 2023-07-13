@@ -41,7 +41,8 @@ class Detect_marker(object):
     # Grasping motion
     # 单点进程 竖直方向初次夹取
     def move_high(self, x, y, dist):
-        if x > 5:
+        print(x)
+        if math.fabs(x) > 5:
             x = 5
         global done
         time.sleep(0.2)
@@ -81,7 +82,7 @@ class Detect_marker(object):
         self.mc.set_color(0,255,0) #抓取结束，亮绿灯
 
     def move_low(self, x, y, dist):
-        if x > 5:
+        if math.fabs(x) > 5:
             x = 5
         # 以下为夹取下层
         # 抓取

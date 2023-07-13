@@ -65,7 +65,7 @@ class GrabParams(object):
 
 	bias_right_low_x = 0 	# 向右边夹取时 夹取前后的左右变化 左+右-
 	bias_right_low_y = -65  # 向右边夹取时 夹取前后的前后变化 前-后+
-	bias_right_low_z = 40 	# 向右边夹取时 夹取前后的高度变化 高+低-
+	bias_right_low_z = 48 	# 向右边夹取时 夹取前后的高度变化 高+低-
 
 	bias_left_high_x = 0 	# 向左边夹取时 夹取前后的左右变化 左+右-
 	bias_left_high_y = 60   # 向左边夹取时 夹取前后的前后变化 前+后-
@@ -85,7 +85,7 @@ class GrabParams(object):
 #判断识别物是否是目标，  对应数字，改detect_target
 	classes = ("apple", "clock", "banana","cat ","bird ")
 	#             0       1       2      3        4
-	detect_target = 0
+	detect_target = 2
 
 # 目标颜色修改
 	colors = ['red', 'green', 'blue', 'yellow', 'purple']
