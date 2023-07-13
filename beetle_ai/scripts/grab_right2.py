@@ -41,6 +41,8 @@ class Detect_marker(object):
     # Grasping motion
     # 单点进程 竖直方向初次夹取
     def move_high(self, x, y, dist):
+        if x > 5:
+            x = 5
         global done
         time.sleep(0.2)
         # 抓取
@@ -79,7 +81,8 @@ class Detect_marker(object):
         self.mc.set_color(0,255,0) #抓取结束，亮绿灯
 
     def move_low(self, x, y, dist):
-        
+        if x > 5:
+            x = 5
         # 以下为夹取下层
         # 抓取
         coords_ori = grabParams.coords_right_low
@@ -331,32 +334,32 @@ def main():
     cap = FastVideoCapture(grabParams.cap_num)
     time.sleep(0.5) 
     
-    # 调整位置
-    count = 0 # 调整次数
-    frame = cap.read()
-    frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
-    result = detect.check_position(frame)
-
-    while result is None:
-        detect.going(3) # 往前走一段继续识别
-        frame = cap.read()
-        frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
-        result = detect.check_position(frame)
-        print("None")
-
-    while math.fabs(detect.c_x - result[0]) > 6 and count < 5: # 反复调整
-        print(detect.c_x - result[0])
-        detect.going(0.1 * (detect.c_x - result[0]))
-        frame = cap.read()
-        frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
-        result = detect.check_position(frame)
-        print(count)
-        count += 1
-    
     # detect.going(detect.c_x - result[0]) # 尽量对准第一个
 
     # 开始夹取
     for i in range(0, 5):
+        # 更换逻辑，慢慢往前找寻目标
+        count = 0 # 调整次数
+        frame = cap.read()
+        frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
+        result = detect.check_position(frame)
+
+        while result is None:
+            detect.going(3) # 往前走一段继续识别
+            frame = cap.read()
+            frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
+            result = detect.check_position(frame)
+            # print("None")
+
+        while math.fabs(detect.c_x - result[0]) > 6 and count < 5: # 反复调整
+            # print(detect.c_x - result[0])
+            detect.going(0.1 * (detect.c_x - result[0]))
+            frame = cap.read()
+            frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
+            result = detect.check_position(frame)
+            # print(count)
+            count += 1
+
         frame = cap.read()
         frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
         frame = detect.transform_frame(frame)
@@ -405,9 +408,9 @@ def main():
             detect.move_low(real_x, real_y, 0)
         os.system("python /home/robuster/RoboCom/beetle_ai/scripts/right.py --debug") # 回到初始状态 
 
-        if i is not 4:
-            detect.going(10) # 往前到下一个抓取位置
-        else:
+        # if i is not 4:
+        #     detect.going(10) # 往前到下一个抓取位置
+        if i == 4:
             os.system("python /home/robuster/RoboCom/navigation/BackNavigation.py")
 
 def going_test():
