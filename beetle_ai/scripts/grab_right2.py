@@ -78,8 +78,8 @@ class Detect_marker(object):
         # 以下为夹取下层
         # 抓取
         coords_ori = grabParams.coords_right_low
-        # 对位置
-        coords_target = [coords_ori[0] + grabParams.bias_right_low_x + x,  coords_ori[1], coords_ori[2], coords_ori[3], coords_ori[4], coords_ori[5]]
+        # 对位置 并往后上方收
+        coords_target = [coords_ori[0] + grabParams.bias_right_low_x + x,  coords_ori[1] + 10, coords_ori[2], coords_ori[3], coords_ori[4], coords_ori[5]]
         self.mc.send_coords(coords_target, 70, 0)
         time.sleep(0.6)
         coords_target1 = [coords_ori[0] + grabParams.bias_right_low_x + x,  coords_ori[1] + grabParams.bias_right_low_y,  
@@ -321,15 +321,27 @@ def main():
     cap = FastVideoCapture(grabParams.cap_num)
     time.sleep(0.5) 
     
-    # # 调整位置
-    # x = 0
-    # y = 0
-    # frame = cap.read()
-    # result = detect.check_position(frame)
-    # while result is None:
-    #     detect.going(2) # 往前走一段继续识别
-    #     frame = cap.read()
-    #     result = detect.check_position(frame)
+    # 调整位置
+    count = 0 # 调整次数
+    frame = cap.read()
+    frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
+    result = detect.check_position(frame)
+
+    while result is None:
+        detect.going(3) # 往前走一段继续识别
+        frame = cap.read()
+        frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
+        result = detect.check_position(frame)
+        print("None")
+
+    while math.fabs(detect.c_x - result[0]) > 8 and count < 3: # 反复调整
+        print(detect.c_x - result[0])
+        detect.going(0.1 * (detect.c_x - result[0]))
+        frame = cap.read()
+        frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
+        result = detect.check_position(frame)
+        print(count)
+        count += 1
     
     # detect.going(detect.c_x - result[0]) # 尽量对准第一个
 
@@ -340,11 +352,12 @@ def main():
         frame = detect.transform_frame(frame)
         detect_result = detect.obj_detect(frame)
         if detect_result is None:  
-            # 往回收一下 防止撞到 考虑去掉?
-            coords_ori = grabParams.coords_right_high
-            coords_target_3 = [coords_ori[0],  coords_ori[1] - 10, coords_ori[2], coords_ori[3], coords_ori[4], coords_ori[5]]
-            detect.mc.send_coords(coords_target_3, 70, 0)
-            time.sleep(0.5)         
+            # # 往回收一下 防止撞到 考虑去掉?
+            # coords_ori = grabParams.coords_right_high
+            # coords_target_3 = [coords_ori[0],  coords_ori[1] - 10, coords_ori[2], coords_ori[3], coords_ori[4], coords_ori[5]]
+            # detect.mc.send_coords(coords_target_3, 70, 0)
+            # time.sleep(0.5)         
+            pass
         else:   
             x, y = detect_result
             print(x, y)
@@ -368,7 +381,7 @@ def main():
         if detect_result is None:  
             # 往回收一下 防止撞到
             coords_ori = grabParams.coords_right_low
-            coords_target_3 = [coords_ori[0],  coords_ori[1] - 10, coords_ori[2], coords_ori[3], coords_ori[4], coords_ori[5]]
+            coords_target_3 = [coords_ori[0],  coords_ori[1] - 10, coords_ori[2] + 10, coords_ori[3], coords_ori[4], coords_ori[5]]
             detect.mc.send_coords(coords_target_3, 70, 0)
             time.sleep(0.5)          
         else:   
