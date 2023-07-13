@@ -8,6 +8,7 @@
 ### 导航部分
 > 位于 `navigation` 中\
 > 修改目标导航点在 `navigation/target_pose.yaml` 及 `navigation/home_pose.yaml` 中进行\
+
 > 主要修改参数如下
 > ```
 > pose:
