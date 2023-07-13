@@ -171,7 +171,7 @@ class Detect_marker(object):
                 w = bottom - top
                 h = right - left
                 cv2.rectangle(img, (int(left), int(top)), (int(right), int(bottom)), (0, 0, 255), 2)
-                cv2.imwrite('/home/cgc/Library/_Compete/2023RoboCom/beetle_ai/img/obj/target.jpg', img, [cv2.IMWRITE_JPEG_QUALITY, 90])
+                # cv2.imwrite('/home/cgc/Library/_Compete/2023RoboCom/beetle_ai/img/obj/target.jpg', img, [cv2.IMWRITE_JPEG_QUALITY, 90])
             else:
                 done = True
                 self.mc.set_color(255,192,203) #识别不到，亮粉灯
@@ -217,7 +217,7 @@ class Detect_marker(object):
                 w = bottom - top
                 h = right - left
                 cv2.rectangle(img, (int(left), int(top)), (int(right), int(bottom)), (0, 0, 255), 2)
-                cv2.imwrite('/home/cgc/Library/_Compete/2023RoboCom/beetle_ai/img/obj/target.jpg', img, [cv2.IMWRITE_JPEG_QUALITY, 90])
+                # cv2.imwrite('/home/cgc/Library/_Compete/2023RoboCom/beetle_ai/img/obj/target.jpg', img, [cv2.IMWRITE_JPEG_QUALITY, 90])
 
             else:
                 done = True
@@ -364,7 +364,7 @@ def main():
         frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
         frame = detect.transform_frame(frame)
         detect_result = detect.obj_detect(frame)
-        if detect_result is None:  
+        if detect_result is None or detect_result[0] == 0 or detect_result[1] == 0:  
             # # 往回收一下 防止撞到 考虑去掉?
             # coords_ori = grabParams.coords_right_high
             # coords_target_3 = [coords_ori[0],  coords_ori[1] - 10, coords_ori[2], coords_ori[3], coords_ori[4], coords_ori[5]]
