@@ -20,15 +20,17 @@ class GrabParams(object):
 	coords_low_left   = [176,  61, 225, -78, 57, -85]
 
 	# 仓库货架使用
-	coords_right_high = [-50.7, -120.1, 290.6, -85.45, 46.39, -173.88] # 向右高初始状态
-	coords_right_low  = [-54.9, -140.4, 214.0, -90.25, 47.02, -175.88] # 向右低初始状态
+	coords_right_high = [-50.7, -130.1, 285.6, -85.45, 46.39, -173.88] # 向右高初始状态
+	# coords_right_low  = [-54.9, -140.4, 214.0, -90.25, 47.02, -175.88] # 向右低初始状态
+	coords_right_low  = [-50.6, -122.3, 225.0, -100.39, 43.41, 169.96] # 向右低初始状态
 
 	# 公共区使用
 	coords_left_high  = [53.7, 112.0, 318.0, -85.93, 48.13, 7.59] # 向左高初始状态
 	coords_left_low   = [53.7, 112.0, 220.0, -85.93, 48.13, 7.59] # 向左低初始状态
 
 	# 充能站使用
-	coords_under      = [51.8, 170.7, 240, -179.16, 3.07, -45.73] # 向下初始状态
+	coords_under      = [51.8, 170.7, 240, -179.16, 11.07, -45.73] # 向下初始状态
+	# coords_under      = [51.8, 170.7 + 40, 240 - 80, -179.16, 11.07, -45.73] # 向下初始状态
 
 	# 放置入库位置 #
 	# 1234为向右夹取时的参数 5678为向左
@@ -59,11 +61,11 @@ class GrabParams(object):
 
 	bias_right_high_x = 0 	# 向右边夹取时 夹取前后的左右变化 左+右-
 	bias_right_high_y = -70 # 向右边夹取时 夹取前后的前后变化 前-后+
-	bias_right_high_z = 45 	# 向右边夹取时 夹取前后的高度变化 高+低-
+	bias_right_high_z = 55 	# 向右边夹取时 夹取前后的高度变化 高+低-
 
 	bias_right_low_x = 0 	# 向右边夹取时 夹取前后的左右变化 左+右-
-	bias_right_low_y = -73  # 向右边夹取时 夹取前后的前后变化 前-后+
-	bias_right_low_z = 20 	# 向右边夹取时 夹取前后的高度变化 高+低-
+	bias_right_low_y = -65  # 向右边夹取时 夹取前后的前后变化 前-后+
+	bias_right_low_z = 48 	# 向右边夹取时 夹取前后的高度变化 高+低-
 
 	bias_left_high_x = 0 	# 向左边夹取时 夹取前后的左右变化 左+右-
 	bias_left_high_y = 60   # 向左边夹取时 夹取前后的前后变化 前+后-
@@ -74,8 +76,8 @@ class GrabParams(object):
 	bias_left_low_z = 35 	# 向左边夹取时 夹取前后的高度变化 高+低-
 
 	bias_under_x = 0 		# 向下夹取时 夹取前后的左右变化 左-右+
-	bias_under_y = 20    	# 向下夹取时 夹取前后的前后变化 前+后- 为了弥补摄像头和夹爪的位置差
-	bias_under_z = -110 	# 向下夹取时 夹取前后的高度变化 高+低-
+	bias_under_y = 50    	# 向下夹取时 夹取前后的前后变化 前+后- 为了弥补摄像头和夹爪的位置差
+	bias_under_z = -80 		# 向下夹取时 夹取前后的高度变化 高+低-
 
 #物块放置测距误差，基本不用动
 	set_diff = 0
@@ -83,7 +85,7 @@ class GrabParams(object):
 #判断识别物是否是目标，  对应数字，改detect_target
 	classes = ("apple", "clock", "banana","cat ","bird ")
 	#             0       1       2      3        4
-	detect_target = 0
+	detect_target = 2
 
 # 目标颜色修改
 	colors = ['red', 'green', 'blue', 'yellow', 'purple']

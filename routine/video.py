@@ -1,7 +1,7 @@
 import cv2
 import os
 
-os.system("killall -9  python")
+# os.system("killall -9  python")
 cap = cv2.VideoCapture(2)
 # while 1:
 _, frame = cap.read()
