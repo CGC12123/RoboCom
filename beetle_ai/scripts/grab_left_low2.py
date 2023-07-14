@@ -74,7 +74,7 @@ class Detect_marker(object):
         #                    coords_ori[2] + grabParams.bias_left_low_z + 30, coords_ori[3], coords_ori[4], coords_ori[5]]
         # self.mc.send_coords(coords_target_4, 70, 0) # 抬高后后撤
         # time.sleep(0.3)
-        self.mc.send_coords(grabParams.coords_pitchdown6, 80, 0)
+        self.mc.send_coords(grabParams.coords_pitchdown8, 80, 0)
         time.sleep(2)
         basic.grap(False)
         done = True
