@@ -83,7 +83,7 @@ void LogTeleop::LogCallback(const sensor_msgs::Joy::ConstPtr& Joy)
 			}
 			else
 			{
-				system("python /home/robuster/RoboCom/beetle_ai/scripts/grab_right.py");
+				system("python /home/robuster/RoboCom/navigation/StartNavigation.py");
 				printf("grab_right");
 			}			  
 			ros::Duration(1).sleep();

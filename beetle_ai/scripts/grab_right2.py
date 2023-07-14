@@ -103,11 +103,16 @@ class Detect_marker(object):
         # 夹取
         basic.grap(True)
         time.sleep(0.5)
-        # 退出前抬高
-        coords_target_2 = [coords_ori[0] + grabParams.bias_right_low_x + x,  coords_ori[1] + grabParams.bias_right_low_y + 35,  
-                           coords_ori[2] + grabParams.bias_right_low_z+15, coords_ori[3], coords_ori[4], coords_ori[5]]
+        # 退出前先回撤
+        coords_target_2 = [coords_ori[0] + grabParams.bias_right_low_x + x,  coords_ori[1] + grabParams.bias_right_low_y + 60,  
+                           coords_ori[2] + grabParams.bias_right_low_z - 20, coords_ori[3], coords_ori[4], coords_ori[5]]
         self.mc.send_coords(coords_target_2, 50, 0)
-        time.sleep(0.2)
+        time.sleep(0.3)
+        #抬高
+        coords_target_2 = [coords_ori[0] + grabParams.bias_right_low_x + x,  coords_ori[1] + grabParams.bias_right_low_y + 60,  
+                           coords_ori[2] + grabParams.bias_right_low_z - 20, coords_ori[3], coords_ori[4], coords_ori[5]]
+        self.mc.send_coords(coords_target_2, 50, 0)
+        time.sleep(0.3)
 
         # 放回
         self.mc.send_coords(grabParams.coords_pitchdown3, 50, 0) # 先抬高
@@ -266,7 +271,9 @@ class Detect_marker(object):
                 done = True
                 self.mc.set_color(255, 192, 203)  # 识别不到，亮粉灯
                 return None
-
+        # 防止拉回去
+        if x > 50:
+            return None
         return x, y
 
     def distance(self, w):
@@ -401,7 +408,7 @@ def main():
                 result = detect.check_position(frame)
             count2 += 1
 
-        while math.fabs(detect.c_x - result[0]) > 6 and count < 5: # 反复调整
+        while math.fabs(detect.c_x - result[0]) > 5 and count < 5: # 反复调整
             # print(detect.c_x - result[0])
             detect.going(0.1 * (detect.c_x - result[0]))
             frame = cap.read()
@@ -454,8 +461,8 @@ def main():
             detect.move_low(real_x, real_y, 0)
         os.system("python /home/robuster/RoboCom/beetle_ai/scripts/right.py --debug") # 回到初始状态 
 
-        # if i is not 4:
-        #     detect.going(10) # 往前到下一个抓取位置
+        if i is not 4:
+            detect.going(8) # 往前到下一个抓取位置
         if i == 4:
             os.system("python /home/robuster/RoboCom/navigation/BackNavigation.py")
 
