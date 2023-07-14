@@ -37,7 +37,7 @@ class GrabParams(object):
 	coords_pitchdown1 	= [-59.5, -33.5, 392.3, -89.36, 46.69, -168.89] # 使其先抬高 避免碰撞
 	coords_pitchdown2 	= [-173.4, -34.3, 235.5, 174.35, -5.38, 71.52] # 入库
 
-	coords_pitchdown3 	= [-75.1, -123.8, 242.3, -94.27, 41.43, 178.41] # 使其撤出来 避免碰撞
+	coords_pitchdown3 	= [-104.6, -87.3, 249.0, -101.26, 41.03, 135.54] # 使其撤出来 避免碰撞
 	coords_pitchdown4 	= [-173.4, -34.3, 230.5, 174.35, -5.38, 71.52] # 入库
 
 	coords_pitchdown5 	= [106.9, 94.9, 368.9, -95.48, 54.7, -25.65] # 使其先抬高 避免碰撞 左侧夹取时使用 为较高的架子 可调可不调
@@ -85,7 +85,7 @@ class GrabParams(object):
 #判断识别物是否是目标，  对应数字，改detect_target
 	classes = ("apple", "clock", "banana","cat ","bird ")
 	#             0       1       2      3        4
-	detect_target = 2
+	detect_target = 0
 
 # 目标颜色修改
 	colors = ['red', 'green', 'blue', 'yellow', 'purple']
