@@ -266,7 +266,9 @@ class Detect_marker(object):
                 done = True
                 self.mc.set_color(255, 192, 203)  # 识别不到，亮粉灯
                 return None
-
+        # 防止拉回去
+        if x > 100:
+            return None
         return x, y
 
     def distance(self, w):
