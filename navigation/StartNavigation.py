@@ -25,11 +25,14 @@ def StartNavigation():
 	sh2 = "bash -c '{}'".format("; ".join(sh2s))
 	process = subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', sh2, '--hold'], 
 					stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-	pid = process.pid
-	# 打开文件，如果不存在则创建
-	with open('/home/robuster/RoboCom/navigation/pid.txt', 'w') as file:
-		# 写入内容
-		file.write(pid)
+	
+	time.sleep(8)
+	process.kill()
+	# pid = process.pid
+	# # 打开文件，如果不存在则创建
+	# with open('/home/robuster/RoboCom/navigation/pid.txt', 'w') as file:
+	# 	# 写入内容
+	# 	file.write(pid)
 
 def autoGrab():
 	# 运行下一步自动夹取
