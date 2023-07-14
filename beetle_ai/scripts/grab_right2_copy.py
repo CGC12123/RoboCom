@@ -455,7 +455,7 @@ def main():
 			print(result[2])
 			if result[2] < 38:
 				going_colser()
-			elif resule[2] > 41:
+			elif result[2] > 41:
 				going_farer()
 			frame = cap.read()
 			frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
@@ -523,16 +523,16 @@ def main():
 def going_colser():
 	detect = Detect_marker()
 	detect.going2(-30)
-	detect.going(5)
+	detect.going(8)
 	detect.going2(30)
-	detect.going(-5)
+	detect.going(-8)
 
 def going_farer():
 	detect = Detect_marker()
 	detect.going2(30)
-	detect.going(5)
+	detect.going(8)
 	detect.going2(-30)
-	detect.going(-5)
+	detect.going(-8)
 
 def going_test():
 	detect = Detect_marker()
