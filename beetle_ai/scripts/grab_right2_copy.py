@@ -454,9 +454,9 @@ def main():
 		while (result[2] < 38 or result[2] > 41) and count3 < 3 and i == 0 and result[2] is not 0:
 			print(result[2])
 			if result[2] < 38:
-				detect.going_colser()
+				going_colser()
 			elif resule[2] > 41:
-				detect.going_farer()
+				going_farer()
 			frame = cap.read()
 			frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
 			result = detect.check_position(frame)
