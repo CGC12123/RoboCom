@@ -57,7 +57,7 @@ class GrabParams(object):
 	ratio       = 0.8 	# 画面中坐标换算为实际前进坐标的值
 	ratio_color = -0.8 	# 颜色夹取中画面中坐标换算为实际前进坐标的值
 
-	dist_bias 	= 1.2 	# 前近距离与预估值的比例 设定为100cm其大约前进92cm 可细调
+	dist_bias 	= 1 	# 前近距离与预估值的比例 设定为100cm其大约前进92cm 可细调
 
 	bias_right_high_x = 0 	# 向右边夹取时 夹取前后的左右变化 左+右-
 	bias_right_high_y = -70 # 向右边夹取时 夹取前后的前后变化 前-后+

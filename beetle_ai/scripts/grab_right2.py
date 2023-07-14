@@ -141,7 +141,8 @@ class Detect_marker(object):
         return frame
 
     def obj_detect(self, img):
-        x=y=0
+        x = y = 0
+        self.clazz = []
         img_ori = img
         img_ori = self.transform_frame(img)
         img = self.transform_frame_128(img)
@@ -188,6 +189,7 @@ class Detect_marker(object):
         else:
             return None
         
+    # 优先返回靠右的坐标
     def check_position(self, img):
         x = y = 0
         img_ori = img
@@ -213,6 +215,46 @@ class Detect_marker(object):
 
             if rightmost_box is not None:
                 left, top, right, bottom = rightmost_box
+                x = int((left + right) / 2)
+                y = int((top + bottom) / 2)
+                w = bottom - top
+                h = right - left
+                cv2.rectangle(img, (int(left), int(top)), (int(right), int(bottom)), (0, 0, 255), 2)
+                # cv2.imwrite('/home/cgc/Library/_Compete/2023RoboCom/beetle_ai/img/obj/target.jpg', img, [cv2.IMWRITE_JPEG_QUALITY, 90])
+
+            else:
+                done = True
+                self.mc.set_color(255, 192, 203)  # 识别不到，亮粉灯
+                return None
+
+        return x, y
+
+    # 优先返回靠左的坐标
+    def check_position2(self, img):
+        x = y = 0
+        img_ori = img
+        img_ori = self.transform_frame(img)
+        img = self.transform_frame_128(img)
+
+        leftmost_box = None
+        leftmost_x = float('inf') # 设置一个初始值为正无穷大
+        net = cv2.dnn.readNetFromONNX(grabParams.ONNX_MODEL)
+        blob = cv2.dnn.blobFromImage(img, 1 / 255.0, (grabParams.IMG_SIZE, grabParams.IMG_SIZE), [0, 0, 0], swapRB=True, crop=False)
+        net.setInput(blob)
+        outputs = net.forward(net.getUnconnectedOutLayersNames())[0]
+        boxes, classes, scores = self.yolo.yolov5_post_process_simple(outputs)
+
+        if boxes is not None:
+            for i in range(len(classes)):
+                # if classes[i] == grabParams.detect_target:
+                box = boxes[i]
+                x = int((box[0] + box[2]) / 2)
+                if x < leftmost_x: # 判断是否为最靠左边的坐标
+                    leftmost_box = box
+                    leftmost_x = x
+
+            if leftmost_box is not None:
+                left, top, right, bottom = leftmost_box
                 x = int((left + right) / 2)
                 y = int((top + bottom) / 2)
                 w = bottom - top
@@ -337,20 +379,27 @@ def main():
     
     # detect.going(detect.c_x - result[0]) # 尽量对准第一个
 
-    # 开始夹取
     for i in range(0, 5):
         # 更换逻辑，慢慢往前找寻目标
         count = 0 # 调整次数
+        count2 = 0
         frame = cap.read()
         frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
         result = detect.check_position(frame)
 
-        while result is None:
-            detect.going(3) # 往前走一段继续识别
-            frame = cap.read()
-            frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
-            result = detect.check_position(frame)
-            # print("None")
+        while result is None and count2 < 3:
+            if i <= 1:
+                detect.going(3) # 往前走一段继续识别
+                frame = cap.read()
+                frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
+                result = detect.check_position2(frame)
+                # print("None")
+            else:
+                detect.going(3) # 往前走一段继续识别
+                frame = cap.read()
+                frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
+                result = detect.check_position(frame)
+            count2 += 1
 
         while math.fabs(detect.c_x - result[0]) > 6 and count < 5: # 反复调整
             # print(detect.c_x - result[0])
@@ -361,16 +410,12 @@ def main():
             # print(count)
             count += 1
 
+        # 开始夹取
         frame = cap.read()
         frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) # 顺时针转九十度
         frame = detect.transform_frame(frame)
         detect_result = detect.obj_detect(frame)
-        if detect_result is None or detect_result[0] == 0 or detect_result[1] == 0:  
-            # # 往回收一下 防止撞到 考虑去掉?
-            # coords_ori = grabParams.coords_right_high
-            # coords_target_3 = [coords_ori[0],  coords_ori[1] - 10, coords_ori[2], coords_ori[3], coords_ori[4], coords_ori[5]]
-            # detect.mc.send_coords(coords_target_3, 70, 0)
-            # time.sleep(0.5)         
+        if detect_result is None:
             pass
         else:   
             x, y = detect_result
