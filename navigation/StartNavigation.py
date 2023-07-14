@@ -26,7 +26,10 @@ def StartNavigation():
 	process = subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', sh2, '--hold'], 
 					stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	pid = process.pid
-	return pid
+	# 打开文件，如果不存在则创建
+	with open('/home/robuster/RoboCom/navigation/pid.txt', 'w') as file:
+		# 写入内容
+		file.write(pid)
 
 def autoGrab():
 	# 运行下一步自动夹取
@@ -57,7 +60,7 @@ if __name__ == '__main__':
 	ChangePosture()
 
 	# 开始导航
-	pid = StartNavigation()
+	StartNavigation()
 
 	# 读取目标位置YAML文件中的数据
 	with open('/home/robuster/RoboCom/navigation/target_pose.yaml', 'r') as f:
@@ -101,7 +104,6 @@ if __name__ == '__main__':
 
 		rate.sleep()
 
-	os.kill(pid, signal.SIGINT)  # 终止进程
 	time.sleep(3)
 	autoGrab() # 判定到达位置后开始夹取
 	
