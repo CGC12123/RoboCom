@@ -6,6 +6,7 @@ import rospy
 import tf
 import yaml
 import math
+import signal
 
 # 导航目标点在 home_pose.yaml 及 target_pose.yaml 中修改
 
@@ -20,12 +21,12 @@ def StartNavigation():
 	time.sleep(15) # 等待导航程序启动完成
 
 	# 发布目标地点话题
-	sh2s = ["echo 123456 | sudo -S chmod +x /home/robuster/RoboCom/navigation/bash/Start2.sh",
-			"/home/robuster/RoboCom/navigation/bash/Start2.sh"]
+	sh2s = ["/home/robuster/RoboCom/navigation/bash/Start2.sh"]
 	sh2 = "bash -c '{}'".format("; ".join(sh2s))
-	subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', sh2, '--hold'], 
+	process = subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', sh2, '--hold'], 
 					stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-	
+	pid = process.pid
+	return pid
 
 def autoGrab():
 	# 运行下一步自动夹取
@@ -44,10 +45,19 @@ def killNode():
 	subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', sh4, '--hold'], 
 					stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
+def ChangePosture():
+	# os.system("python /home/robuster/RoboCom/beetle_ai/scripts/zero.py")
+	# time.sleep(0.4)
+	# os.system("python /home/robuster/RoboCom/beetle_ai/scripts/right.py")
+	# time.sleep(0.3)
+	os.system("python /home/robuster/RoboCom/beetle_ai/scripts/right_low.py")
 
 if __name__ == '__main__':
+	# 调整姿态
+	ChangePosture()
+
 	# 开始导航
-	StartNavigation()
+	pid = StartNavigation()
 
 	# 读取目标位置YAML文件中的数据
 	with open('/home/robuster/RoboCom/navigation/target_pose.yaml', 'r') as f:
@@ -91,6 +101,7 @@ if __name__ == '__main__':
 
 		rate.sleep()
 
+	os.kill(pid, signal.SIGINT)  # 终止进程
 	time.sleep(3)
 	autoGrab() # 判定到达位置后开始夹取
 	
