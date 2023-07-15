@@ -51,7 +51,7 @@ class GrabParams(object):
 
 
 #需要调试的参数
-	cap_num = 3   # 摄像头编号
+	cap_num = 2   # 摄像头编号
 	cap_num2 = 3   # 摄像头编号2 备用 有时1会死掉
 
 	ratio       = 0.8 	# 画面中坐标换算为实际前进坐标的值
