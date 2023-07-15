@@ -84,7 +84,7 @@ if __name__ == '__main__':
 	rate = rospy.Rate(10.0)
 
 	# 导航点允许的误差值
-	bias_navi = 0.1
+	bias_navi = 0.05
 
 	while not rospy.is_shutdown():
 		try:
@@ -97,9 +97,9 @@ if __name__ == '__main__':
 			# 		and (math.fabs(orien_x - rot[0]) < bias_navi) and (math.fabs(orien_y - rot[1]) < bias_navi) 
 			# 		and (math.fabs(orien_z - rot[2]) < bias_navi) and (math.fabs(orien_w - rot[3]) < bias_navi)):
 			if ((math.fabs(pose_x - trans[0]) < bias_navi) and (math.fabs(pose_y - trans[1]) < bias_navi)
-					and (math.fabs(orien_x - rot[0]) < bias_navi) and (math.fabs(orien_y - rot[1]) < bias_navi) 
-					and (math.fabs(orien_z - rot[2]) < bias_navi) and (math.fabs(orien_w - rot[3]) < bias_navi)):
+					and (math.fabs(orien_w - rot[3]) < bias_navi)):
 				print("arrive") # 到达位置
+				time.sleep(4)
 				killNode()
 				break
 		except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
@@ -107,6 +107,6 @@ if __name__ == '__main__':
 
 		rate.sleep()
 
-	time.sleep(3)
+	time.sleep(5)
 	autoGrab() # 判定到达位置后开始夹取
 	
