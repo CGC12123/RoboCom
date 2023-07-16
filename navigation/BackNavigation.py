@@ -3,37 +3,36 @@ import subprocess
 import time
 import os
 import signal
+import actionlib
+import rospy
+import yaml
+from actionlib_msgs.msg import GoalStatus
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 
 # 回到出发点
-# 导航目标点请在 bash/Back.sh中修改
-# 打开文件
-# with open('/home/robuster/RoboCom/navigation/pid.txt', 'r') as file:
-#     # 读取文件内容
-#     pid = file.read()
-#     # 打印文件内容
-#     print(pid)
-# os.kill(pid, signal.SIGINT)  # 终止进程
+def send_home(goal):
+	client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+	client.wait_for_server()
+	goal.target_pose.header.frame_id = 'map'
+	goal.target_pose.header.stamp = rospy.Time.now()
+	client.send_goal(goal)  #, done_cb=home_reached_callback
 
-# 打开导航软件
-sh1s = ["echo 123456 | sudo -S chmod +x /home/robuster/RoboCom/navigation/bash/Start1.sh",
-                "/home/robuster/RoboCom/navigation/bash/Start1.sh"]
-sh1 = "bash -c '{}'".format("; ".join(sh1s))
-subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', sh1, '--hold'], 
-                                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+if __name__ == '__main__':
+	with open('/home/robuster/RoboCom/navigation/home_pose.yaml', 'r') as f:
+		yaml_data = yaml.load(f, Loader=yaml.SafeLoader)
 
-time.sleep(15) # 等待导航程序启动完成
+	pose_x = yaml_data['pose']['position']['x']
+	pose_y = yaml_data['pose']['position']['y']
+	pose_z = yaml_data['pose']['position']['z']
 
-sh1s = ["echo 123456 | sudo -S chmod +x /home/robuster/RoboCom/navigation/bash/Start1.sh",
-                "/home/robuster/RoboCom/navigation/bash/Start1.sh"]
-sh1 = "bash -c '{}'".format("; ".join(sh1s))
-subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', sh1, '--hold'], 
-                                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	orien_x = yaml_data['pose']['orientation']['x']
+	orien_y = yaml_data['pose']['orientation']['y']
+	orien_z = yaml_data['pose']['orientation']['z']
+	orien_w = yaml_data['pose']['orientation']['w']
 
-time.sleep(15) # 等待导航程序启动完成
-
-# 发布目标地点话题
-sh2s = ["echo 123456 | sudo -S chmod +x /home/robuster/RoboCom/navigation/bash/Back.sh",
-        "/home/robuster/RoboCom/navigation/bash/Back.sh"]
-sh2 = "bash -c '{}'".format("; ".join(sh2s))
-subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', sh2, '--hold'], 
-                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	home = MoveBaseGoal()
+	home.target_pose.pose = Pose(Point(pose_x, pose_y, pose_z),
+								 Quaternion(orien_x, orien_y, orien_z, orien_w))
+	send_home(home)

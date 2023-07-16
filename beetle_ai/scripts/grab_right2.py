@@ -314,6 +314,7 @@ class Detect_marker(object):
 		f.write('0')
 		f.close()
 
+	# 前进后退
 	def going(self, dist):
 	   # 单位为cm
 		# if self.direction:
@@ -354,6 +355,7 @@ class Detect_marker(object):
 		move_cmd.angular.z = 0
 		self.pub.publish(move_cmd)
 
+	# 转弯
 	def going2(self, dist):
 	   # 单位为cm
 		# if self.direction:
@@ -381,6 +383,84 @@ class Detect_marker(object):
 			while True:
 				move_cmd.linear.x = 0.0
 				move_cmd.angular.z = -0.1
+				if go_count - count < 2:
+					move_cmd.linear.x = 0.05
+					move_cmd.angular.z = 0
+				self.pub.publish(move_cmd)
+				count += 1
+				if count >= go_count:
+					break
+				self.rate.sleep()
+		# 当循环结束时，手动停止机器人运动
+		move_cmd.linear.x = 0
+		move_cmd.angular.z = 0
+		self.pub.publish(move_cmd)
+
+	# 前进后退
+	def going_faster(self, dist):
+	   # 单位为cm
+		# if self.direction:
+		# go_count = int(dist + grabParams.move_power_high_left + 0.5)
+		# else:
+		# go_count = int(dist + grabParams.move_power_high_right + 0.5)
+		go_count = int(dist * grabParams.dist_bias)
+		count = 0
+		move_cmd = Twist()
+		time.sleep(0.5)
+		if go_count >= 0:
+			while True:
+				move_cmd.linear.x = 0.3
+				move_cmd.angular.z = 0.0
+				if go_count - count < 2:
+					move_cmd.linear.x = 0.05
+					move_cmd.angular.z = 0
+				self.pub.publish(move_cmd)
+				count += 1
+				if count >= go_count:
+					break
+				self.rate.sleep()
+		else:
+			go_count = -1 * go_count
+			while True:
+				move_cmd.linear.x = -0.3
+				move_cmd.angular.z = 0.0
+				if go_count - count < 2:
+					move_cmd.linear.x = 0.05
+					move_cmd.angular.z = 0
+				self.pub.publish(move_cmd)
+				count += 1
+				if count >= go_count:
+					break
+				self.rate.sleep()
+		# 当循环结束时，手动停止机器人运动
+		move_cmd.linear.x = 0
+		move_cmd.angular.z = 0
+		self.pub.publish(move_cmd)
+
+	# 转弯
+	def going2_faster(self, dist):
+	   	# 单位为cm
+		go_count = int(dist * grabParams.dist_bias)
+		count = 0
+		move_cmd = Twist()
+		time.sleep(0.5)
+		if go_count >= 0:
+			while True:
+				move_cmd.linear.x = 0.0
+				move_cmd.angular.z = 0.2
+				if go_count - count < 2:
+					move_cmd.linear.x = 0.05
+					move_cmd.angular.z = 0
+				self.pub.publish(move_cmd)
+				count += 1
+				if count >= go_count:
+					break
+				self.rate.sleep()
+		else:
+			go_count = -1 * go_count
+			while True:
+				move_cmd.linear.x = 0.0
+				move_cmd.angular.z = -0.2
 				if go_count - count < 2:
 					move_cmd.linear.x = 0.05
 					move_cmd.angular.z = 0
@@ -529,6 +609,7 @@ def main():
 		if i is not 4:
 			detect.going(10) # 往前到下一个抓取位置
 		if i == 4:
+			back_pose_ready()
 			os.system("python /home/robuster/RoboCom/navigation/BackNavigation.py")
 
 def going_colser():
@@ -551,6 +632,12 @@ def going_test():
 	detect.going(5)
 	detect.going2(30)
 	detect.going(-5)
+
+def back_pose_ready():
+	detect = Detect_marker()
+	detect.going2_faster(30)
+	detect.going_faster(50)
+	detect.going2_faster(-30)
 			
 if __name__ == "__main__":
 	main()

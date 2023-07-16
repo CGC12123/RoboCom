@@ -7,65 +7,15 @@ import tf
 import yaml
 import math
 import signal
+import actionlib
+from actionlib_msgs.msg import GoalStatus
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 
 # 导航目标点在 home_pose.yaml 及 target_pose.yaml 中修改
 
 def StartNavigation():
-	# 打开导航软件
-	sh1s = ["echo 123456 | sudo -S chmod +x /home/robuster/RoboCom/navigation/bash/Start1.sh",
-			"/home/robuster/RoboCom/navigation/bash/Start1.sh"]
-	sh1 = "bash -c '{}'".format("; ".join(sh1s))
-	subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', sh1, '--hold'], 
-					stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-	time.sleep(15) # 等待导航程序启动完成
-
-	# 发布目标地点话题
-	sh2s = ["/home/robuster/RoboCom/navigation/bash/Start2.sh"]
-	sh2 = "bash -c '{}'".format("; ".join(sh2s))
-	process = subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', sh2, '--hold'], 
-					stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-	
-	time.sleep(8)
-	process.kill()
-	# pid = process.pid
-	# # 打开文件，如果不存在则创建
-	# with open('/home/robuster/RoboCom/navigation/pid.txt', 'w') as file:
-	# 	# 写入内容
-	# 	file.write(pid)
-
-def autoGrab():
-	# 运行下一步自动夹取
-	os.system("/home/robuster/RoboCom/navigation/bash/StartGrab.sh")
-	# sh3s = ["echo 123456 | sudo -S chmod 777 /home/robuster/RoboCom/navigation/bash/StartGrab.sh",
-	# 		"/home/robuster/RoboCom/navigation/bash/StartGrab.sh"]
-	# sh3 = "bash -c '{}'".format("; ".join(sh3s))
-	# subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', sh3, '--hold'], 
-	# 				stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-def killNode():
-	# 关闭导航节点
-	sh4s = ["echo 123456 | sudo -S chmod +x /home/robuster/RoboCom/navigation/bash/Killnode.sh",
-			"/home/robuster/RoboCom/navigation/bash/Killnode.sh"]
-	sh4 = "bash -c '{}'".format("; ".join(sh4s))
-	subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', sh4, '--hold'], 
-					stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-def ChangePosture():
-	# os.system("python /home/robuster/RoboCom/beetle_ai/scripts/zero.py")
-	# time.sleep(0.4)
-	# os.system("python /home/robuster/RoboCom/beetle_ai/scripts/right.py")
-	# time.sleep(0.3)
-	os.system("python /home/robuster/RoboCom/beetle_ai/scripts/right_low.py")
-
-if __name__ == '__main__':
-	# 调整姿态
-	ChangePosture()
-
-	# 开始导航
-	StartNavigation()
-
-	# 读取目标位置YAML文件中的数据
 	with open('/home/robuster/RoboCom/navigation/target_pose.yaml', 'r') as f:
 		yaml_data = yaml.load(f, Loader=yaml.SafeLoader)
 
@@ -78,35 +28,49 @@ if __name__ == '__main__':
 	orien_z = yaml_data['pose']['orientation']['z']
 	orien_w = yaml_data['pose']['orientation']['w']
 
-	# 监听tf
-	rospy.init_node('tf_listener')
-	listener = tf.TransformListener()
-	rate = rospy.Rate(10.0)
+	goal = MoveBaseGoal()
+	goal.target_pose.pose = Pose(Point(pose_x, pose_y, pose_z),
+								 Quaternion(orien_x, orien_y, orien_z, orien_w))
+	flag = 1 # 移动到位标志
+	send_goal(goal)
+	while (flag):
+		time.sleep(1)
 
-	# 导航点允许的误差值
-	bias_navi = 0.05
+def autoGrab():
+	# 运行下一步自动夹取
+	os.system("/home/robuster/RoboCom/navigation/bash/StartGrab.sh")
+	# sh3s = ["echo 123456 | sudo -S chmod 777 /home/robuster/RoboCom/navigation/bash/StartGrab.sh",
+	# 		"/home/robuster/RoboCom/navigation/bash/StartGrab.sh"]
+	# sh3 = "bash -c '{}'".format("; ".join(sh3s))
+	# subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', sh3, '--hold'], 
+	# 				stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-	while not rospy.is_shutdown():
-		try:
-			(trans, rot) = listener.lookupTransform('/map', '/base_link', rospy.Time(0))
+def send_goal(goal_number, goal):
+	client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+	client.wait_for_server()
+	goal.target_pose.header.frame_id = 'map'
+	goal.target_pose.header.stamp = rospy.Time.now()
+	client.send_goal(goal, done_cb=goal_reached_callback)
+	client.wait_for_result()
 
-			# rospy.loginfo("Translation: x = %f, y = %f, z = %f,   Rotation:    x = %f, y = %f, z = %f, w = %f",
-			# 	trans[0], trans[1], trans[2], rot[0], rot[1], rot[2], rot[3])
+def goal_reached_callback(goal_status, result):
+    global flag
+    if goal_status == GoalStatus.SUCCEEDED:
+        print("arrive")
+        flag = 0
+    else:
+        print("trouble")
 
-			# if ((math.fabs(pose_x - trans[0]) < bias_navi) and (math.fabs(pose_y - trans[1]) < bias_navi) and (math.fabs(pose_z - trans[2]) < bias_navi)
-			# 		and (math.fabs(orien_x - rot[0]) < bias_navi) and (math.fabs(orien_y - rot[1]) < bias_navi) 
-			# 		and (math.fabs(orien_z - rot[2]) < bias_navi) and (math.fabs(orien_w - rot[3]) < bias_navi)):
-			if ((math.fabs(pose_x - trans[0]) < bias_navi) and (math.fabs(pose_y - trans[1]) < bias_navi)
-					and (math.fabs(orien_w - rot[3]) < bias_navi)):
-				print("arrive") # 到达位置
-				time.sleep(4)
-				killNode()
-				break
-		except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-			continue
+def ChangePosture():
+	os.system("python /home/robuster/RoboCom/beetle_ai/scripts/right_low.py")
 
-		rate.sleep()
+if __name__ == '__main__':
+	# 调整姿态
+	ChangePosture()
 
-	time.sleep(5)
+	# 开始导航
+	StartNavigation()
+
+	time.sleep(3)
 	autoGrab() # 判定到达位置后开始夹取
 	
