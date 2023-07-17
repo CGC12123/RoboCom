@@ -409,7 +409,7 @@ class Detect_marker(object):
 		time.sleep(0.5)
 		if go_count >= 0:
 			while True:
-				move_cmd.linear.x = 0.3
+				move_cmd.linear.x = 0.4
 				move_cmd.angular.z = 0.0
 				if go_count - count < 2:
 					move_cmd.linear.x = 0.05
@@ -645,7 +645,7 @@ def back_pose_ready():
 	detect = Detect_marker()
 	detect.going2_faster(-30)
 	detect.going_faster(-10)
-	detect.going2_faster(40)
+	detect.going2_faster(50)
 			
 if __name__ == "__main__":
 	main()
