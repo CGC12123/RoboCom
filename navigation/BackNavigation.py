@@ -20,6 +20,8 @@ def send_home(goal):
 	client.send_goal(goal)  #, done_cb=home_reached_callback
 
 if __name__ == '__main__':
+	rospy.init_node('navigation')
+
 	with open('/home/robuster/RoboCom/navigation/home_pose.yaml', 'r') as f:
 		yaml_data = yaml.load(f, Loader=yaml.SafeLoader)
 

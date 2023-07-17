@@ -504,7 +504,7 @@ def main():
 	# detect.run()
 	cap = FastVideoCapture(grabParams.cap_num)
 	time.sleep(0.5) 
-	
+	count_grab = 0
 	# detect.going(detect.c_x - result[0]) # 尽量对准第一个
 
 	for i in range(0, 5):
@@ -577,6 +577,9 @@ def main():
 			detect.mc.set_color(255,0,0) #抓取开始，亮红灯
 
 			detect.move_high(real_x, real_y, 0)
+			count_grab += 1
+			if count_grab == 3:
+				break
 			# detect.going(20) # 往前到下一个抓取位置
 
 		os.system("python /home/robuster/RoboCom/beetle_ai/scripts/right.py --debug") # 回到高点防止鬼畜
@@ -604,6 +607,9 @@ def main():
 			# print("move")
 			detect.mc.set_color(255,0,0) #抓取开始，亮红灯
 			detect.move_low(real_x, real_y, 0)
+			count_grab += 1
+			if count_grab == 3:
+				break
 		os.system("python /home/robuster/RoboCom/beetle_ai/scripts/right.py --debug") # 回到初始状态 
 
 		if i is not 4:
@@ -611,6 +617,8 @@ def main():
 		if i == 4:
 			back_pose_ready()
 			os.system("python /home/robuster/RoboCom/navigation/BackNavigation.py")
+	back_pose_ready()
+	os.system("python /home/robuster/RoboCom/navigation/BackNavigation.py")
 
 def going_colser():
 	detect = Detect_marker()
@@ -635,9 +643,9 @@ def going_test():
 
 def back_pose_ready():
 	detect = Detect_marker()
-	detect.going2_faster(30)
-	detect.going_faster(50)
 	detect.going2_faster(-30)
+	detect.going_faster(-10)
+	detect.going2_faster(40)
 			
 if __name__ == "__main__":
 	main()
