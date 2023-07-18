@@ -66,7 +66,7 @@ class Detect_marker(object):
 		coords_target_3 = [coords_ori[0] + grabParams.bias_right_high_x + x,  coords_ori[1] + grabParams.bias_right_high_y,  
 							coords_ori[2] + grabParams.bias_right_high_z, coords_ori[3], coords_ori[4], coords_ori[5]]
 		self.mc.send_coords(coords_target_3, 30, 0)
-		time.sleep(0.8)
+		time.sleep(1)
 		basic.grap(True)
 		time.sleep(1)
 
@@ -99,7 +99,7 @@ class Detect_marker(object):
 		coords_target1 = [coords_ori[0] + grabParams.bias_right_low_x + x,  coords_ori[1] + grabParams.bias_right_low_y,  
 						 coords_ori[2] + grabParams.bias_right_low_z, coords_ori[3], coords_ori[4], coords_ori[5]]
 		self.mc.send_coords(coords_target1, 30, 0)
-		time.sleep(0.8)
+		time.sleep(1)
 		# 夹取
 		basic.grap(True)
 		time.sleep(0.5)
