@@ -41,11 +41,6 @@ def StartNavigation():
 def autoGrab():
 	# 运行下一步自动夹取
 	os.system("python /home/robuster/RoboCom/beetle_ai/scripts/grab_right.py")
-	# sh3s = ["echo 123456 | sudo -S chmod 777 /home/robuster/RoboCom/navigation/bash/StartGrab.sh",
-	# 		"/home/robuster/RoboCom/navigation/bash/StartGrab.sh"]
-	# sh3 = "bash -c '{}'".format("; ".join(sh3s))
-	# subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', sh3, '--hold'], 
-	# 				stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 def send_goal(goal):
 	client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
