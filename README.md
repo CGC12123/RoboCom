@@ -2,8 +2,8 @@
 > 此为为省赛手动及自动夹取对抗赛所设计的，基于RB280的智慧零售赛道机械臂车控制代码
 
 ## 赛事
-[2023睿抗机器人开发者大赛(RAICOM) 智慧零售赛道](https://www.robocom.com.cn/content.html?cid=637)
-
+[2023睿抗机器人开发者大赛(RAICOM) 智慧零售赛道](https://www.robocom.com.cn/index.html)\
+[赛事规则](https://www.robocom.com.cn/content.html?cid=637)
 ## 赛事获奖情况
 - ### 福建省赛区一等奖
 
