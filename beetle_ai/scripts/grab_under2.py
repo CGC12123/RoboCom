@@ -74,9 +74,9 @@ class Detect_marker(object):
 		time.sleep(1)
 
 		# 放回
-		self.mc.send_coords(grabParams.coords_pitchdown9, 70, 0)
+		self.mc.send_coords(grabParams.coords_pitchdown9, 50, 0)
 		time.sleep(1)
-		self.mc.send_coords(grabParams.coords_pitchdown10, 70, 0)
+		self.mc.send_coords(grabParams.coords_pitchdown10, 50, 0)
 		time.sleep(2)
 		basic.grap(False)
 		done = True
@@ -225,7 +225,7 @@ class Detect_marker(object):
 
 	# 需要修改为新的放置位置
 	def put_down(self):
-		self.mc.send_coords([15,-192,300,-125,60,152], 70, 0)
+		self.mc.send_coords([15,-192,300,-125,60,152], 50, 0)
 		basic.grap(False)
 
 	def show_image(self, img):

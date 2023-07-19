@@ -61,13 +61,13 @@ class Detect_marker(object):
         # 先抬高
         coords_target_3 = [coords_ori[0] + grabParams.bias_left_high_x + x,  coords_ori[1] - 20,  
                            coords_ori[2] + grabParams.bias_left_high_z + 10, coords_ori[3], coords_ori[4], coords_ori[5]]
-        self.mc.send_coords(coords_target_3, 70, 0)
+        self.mc.send_coords(coords_target_3, 50, 0)
         time.sleep(0.6)
         
         # 移动到目标位置
         coords_target_4 = [coords_ori[0] + grabParams.bias_left_high_x + x,  coords_ori[1] + grabParams.bias_left_high_y,  
                            coords_ori[2] + grabParams.bias_left_high_z, coords_ori[3], coords_ori[4], coords_ori[5]]
-        self.mc.send_coords(coords_target_4, 70, 0)
+        self.mc.send_coords(coords_target_4, 50, 0)
         time.sleep(0.6)
         basic.grap(True)
         time.sleep(1)
@@ -75,7 +75,7 @@ class Detect_marker(object):
         # 放回
         coords_target_4 = [coords_ori[0] + grabParams.bias_left_high_x + x,  coords_ori[1] + grabParams.bias_left_high_y - 55,  
                            coords_ori[2] + grabParams.bias_left_high_z + 45, coords_ori[3], coords_ori[4], coords_ori[5]]
-        self.mc.send_coords(coords_target_4, 70, 0) # 先抬高
+        self.mc.send_coords(coords_target_4, 50, 0) # 先抬高
         time.sleep(0.5)
         # coords_target_4 = [coords_ori[0] + grabParams.bias_left_high_x + x,  coords_ori[1] + grabParams.bias_left_high_y - 40,  
         #                    coords_ori[2] + grabParams.bias_left_high_z + 30, coords_ori[3], coords_ori[4], coords_ori[5]]
@@ -208,7 +208,7 @@ class Detect_marker(object):
 
     # 需要修改为新的放置位置
     def put_down(self):
-        self.mc.send_coords([15,-192,300,-125,60,152], 70, 0)
+        self.mc.send_coords([15,-192,300,-125,60,152],50, 0)
         basic.grap(False)
 
     def show_image(self, img):
