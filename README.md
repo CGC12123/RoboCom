@@ -1,72 +1,21 @@
-# Robocom
-> 基于RB280
+# Robocom智慧零售赛道
+> 此为为省赛手动及自动夹取对抗赛所涉及的，基于RB280的智慧零售赛道机械臂车控制代码
+
+## 赛事
+[2023睿抗机器人开发者大赛(RAICOM) 智慧零售赛道](https://www.robocom.com.cn/content.html?cid=637)
+
+## 赛事获奖情况
+- ### 福建省赛区一等奖
 
 ## 代码说明
 ### 夹取部分
-> 位于 `beetle_ai/script` 中
+> 位于 `beetle_ai/script` 中\
+> [夹取部分](beetle_ai/scripts/README.md)
 
 ### 导航部分
 > 位于 `navigation` 中\
-> 修改目标导航点在 `navigation/target_pose.yaml` 及 `navigation/home_pose.yaml` 中进行\
+> [导航部分](navigation/README.md)
 
-> 主要修改参数如下
-> ```
-> pose:
->  position: 
->    x: 0.743
->    y: -0.208
->    z: 0.0
->  orientation: 
->    x: 0.0
->    y: 0.0
->    z: -0.034
->    w: 0.999"
-> ```
-> 具体使用为 [地图建图及导航](#地图建图及导航)
-
-
-## 机器人控制部分操作说明
-### 机械臂调整
-```bash
-# 打开可视化操作程序
-cd ~/catkin_ws/src/mycobot_tools/myblockly
-./myblockly
-```
-
-### 地图建图及导航
-```bash
-# 启动建图程序
-roslaunch robuster_mr_navigation mapping.launch
-
-# 打开另一个终端 停止接收传感器数据
-rosservice call /finish_trajectory 0
-# 储存地图
-rosservice call /write_state "{filename: '${HOME}/Downloads/mymap.pbstream'}"
-# 转换地图格式
-rosrun cartographer_ros cartographer_pbstream_to_ros_map -map_filestem={HOME}/Downloads/mymap -pbstream_filename=/home/robuster/Downloads/mymap.pbstream -resolution=0.05
-
-# 启动导航软件
-roslaunch robuster_mr_navigation navigation.launch
-
-# 获取设备当前坐标
-rosrun tf tf_echo /map /base_link
-
-# 导航到目标点
-rostopic pub /move_base_simple/goal geometry_msgs/PoseStamped "header:
-  seq: 0
-  stamp: 
-    secs: 0
-    nsecs: 0
-  frame_id: 'map'
-pose:
-  position: 
-    x: 0.743
-    y: -0.208
-    z: 0.0
-  orientation: 
-    x: 0.0
-    y: 0.0
-    z: -0.034
-    w: 0.999"
-```
-> 下方的pose为目标导航点坐标
+### 遥控器设置部分
+> 位于 `telecontrol` 中\
+> [遥控器设置部分](telecontrol/README.md)
