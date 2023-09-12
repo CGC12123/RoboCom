@@ -82,9 +82,9 @@ class Detect_marker(object):
         # self.mc.send_coords(coords_target_4, 70, 0) # 抬高后后撤
         # time.sleep(0.3)
 
-        self.mc.send_coords([-150.0, -31.4, 103.6, 138.89, -25.85, -138.97], 50, 0)
+        # self.mc.send_coords([-150.0, -31.4, 103.6, 138.89, -25.85, -138.97], 50, 0)
 
-        # self.mc.send_coords(grabParams.coords_pitchdown6, 80, 0)
+        self.mc.send_coords(grabParams.coords_pitchdown6, 80, 0)
         time.sleep(2)
         basic.grap(False)
         done = True
@@ -229,7 +229,7 @@ def main():
     f.write('1')
     f.close()
     os.system("python /home/robuster/RoboCom/beetle_ai/scripts/left_low.py --debug") # 纠正机械臂姿态
-    time.sleep(1)
+    time.sleep(2)
     os.system("python /home/robuster/RoboCom/beetle_ai/scripts/left.py --debug")
             
 if __name__ == "__main__":
