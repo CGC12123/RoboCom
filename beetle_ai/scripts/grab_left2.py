@@ -228,8 +228,8 @@ def main():
     f = open("/home/robuster/RoboCom/beetle_ai/scripts/direction.txt", "w")
     f.write('1')
     f.close()
-    os.system("python /home/robuster/RoboCom/beetle_ai/scripts/left_low.py --debug") # 纠正机械臂姿态
-    time.sleep(2)
+    # os.system("python /home/robuster/RoboCom/beetle_ai/scripts/left_low.py --debug") # 纠正机械臂姿态
+    # time.sleep(2)
     os.system("python /home/robuster/RoboCom/beetle_ai/scripts/left.py --debug")
             
 if __name__ == "__main__":

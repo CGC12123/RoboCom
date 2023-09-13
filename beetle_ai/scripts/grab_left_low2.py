@@ -13,7 +13,7 @@ import math
 from GrabParams import grabParams
 import basic
 import argparse
-import pytesseract
+# import pytesseract
 
 parser = argparse.ArgumentParser(description='manual to this script')
 parser.add_argument("--debug", type=bool, default="False")

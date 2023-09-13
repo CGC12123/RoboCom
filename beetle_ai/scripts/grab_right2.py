@@ -89,7 +89,6 @@ class Detect_marker(object):
 		coords_ori = grabParams.coords_right_low
 		# 对位置 并往后上方收
 		# 往回收一下 防止撞到
-		coords_ori = grabParams.coords_right_high
 		coords_target = [coords_ori[0] + x,  coords_ori[1] + 20, coords_ori[2], coords_ori[3], coords_ori[4], coords_ori[5]]
 		self.mc.send_coords(coords_target, 50, 0)
 		time.sleep(0.2)
