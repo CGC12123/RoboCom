@@ -3,6 +3,9 @@
 
 class GrabParams(object):
 #基本参数
+
+	side = 'left'
+
 	y_bias = 5
 	x_bias = 40
 	debug = True #True         

@@ -642,11 +642,16 @@ def going_test():
 
 def back_pose_ready():
 	detect = Detect_marker()
-	detect.going2_faster(-30)
-	detect.going_faster(-10)
-	detect.going2_faster(50)
-			
+	if grabParams.side == 'right':
+		detect.going2_faster(-30)
+		detect.going_faster(-10)
+		detect.going2_faster(50)
+	else:
+		detect.going2_faster(-30)
+		detect.going_faster(-13)
+		detect.going2_faster(-200)
 if __name__ == "__main__":
-	main()
+	# main()
+	back_pose_ready()
 	# going_test()
 	
