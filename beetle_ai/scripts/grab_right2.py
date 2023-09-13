@@ -651,7 +651,7 @@ def back_pose_ready():
 		detect.going_faster(-13)
 		detect.going2_faster(-200)
 if __name__ == "__main__":
-	# main()
-	back_pose_ready()
+	main()
+	# back_pose_ready()
 	# going_test()
 	
