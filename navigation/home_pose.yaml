@@ -6,11 +6,11 @@ header:
   frame_id: 'map'
 pose:
   position: 
-    x: -0.415
-    y: -0.329
+    x: -0.208
+    y: -0.288
     z: 0.0
   orientation: 
     x: 0.0
     y: 0.0
-    z: 0.993
-    w: -0.122
+    z: 0.998
+    w: -0.058
