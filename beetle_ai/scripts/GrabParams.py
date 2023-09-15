@@ -4,7 +4,7 @@
 class GrabParams(object):
 #基本参数
 
-	side = 'left'
+	side = 'right'
 
 	y_bias = 5
 	x_bias = 40
